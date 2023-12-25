@@ -1,0 +1,17 @@
+{
+  "appName": "Chat App",
+  "@appName": {
+    "type": "text",
+    "description": "Apps name"
+  },
+  "learnMore": "Learn More",
+  "@learnMore": {
+    "type": "text",
+    "description": "Learn more text"
+  },
+  "more": "More",
+  "@more": {
+    "type": "text",
+    "description": "More"
+  }
+}
