@@ -1,6 +1,7 @@
 import 'package:chatapp/src/core/localization/locale_bloc.dart';
 import 'package:chatapp/src/features/auth/data/data_sources/firebase_auth_service.dart';
 import 'package:chatapp/src/features/auth/data/data_sources/firebase_storage_service.dart';
+import 'package:chatapp/src/features/auth/data/data_sources/user_profile_service.dart';
 import 'package:chatapp/src/features/auth/data/repository/auth_repository_impl.dart';
 import 'package:chatapp/src/features/auth/domain/repository/auth_repository.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/edit_user_usecases.dart';
@@ -23,7 +24,8 @@ Future<void> initializeDependencies() async {
   /// Auth:
   locator.registerSingleton<FirebaseAuthService>(FirebaseAuthService());
   locator.registerSingleton<FirebaseStorageService>(FirebaseStorageService());
-  locator.registerSingleton<AuthRepository>(AuthRepositoryImpl(locator(), locator()));
+  locator.registerSingleton<UserProfileService>(UserProfileService());
+  locator.registerSingleton<AuthRepository>(AuthRepositoryImpl(locator(), locator(), locator()));
 
   ///UseCases
 

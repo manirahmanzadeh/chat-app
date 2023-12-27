@@ -1,31 +1,40 @@
 import 'dart:io';
 
+import 'package:chatapp/src/features/auth/data/data_sources/firebase_auth_service.dart';
+import 'package:chatapp/src/features/auth/data/data_sources/firebase_storage_service.dart';
+import 'package:chatapp/src/features/auth/data/data_sources/user_profile_service.dart';
+import 'package:chatapp/src/features/auth/domain/repository/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:chatapp/src/features/auth/data/data_sources/firebase_auth_service.dart';
-import 'package:chatapp/src/features/auth/data/data_sources/firebase_storage_service.dart';
-import 'package:chatapp/src/features/auth/domain/repository/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuthService _authService;
   final FirebaseStorageService _storageService;
+  final UserProfileService _userProfileService;
 
-  const AuthRepositoryImpl(this._authService, this._storageService);
+  const AuthRepositoryImpl(
+    this._authService,
+    this._storageService,
+    this._userProfileService,
+  );
 
   @override
   Future<void> createUserWithEmailAndPassword(String email, String password) async {
     await _authService.createUserWithEmailAndPassword(email: email, password: password);
+    await _userProfileService.getOrCreateUserProfile(_authService.currentUser!);
   }
 
   @override
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     await _authService.signInWithEmailAndPassword(email: email, password: password);
+    await _userProfileService.getOrCreateUserProfile(_authService.currentUser!);
   }
 
   @override
   Future<void> signOut() async {
     await _authService.signOut();
+    _userProfileService.signOut();
   }
 
   @override
@@ -53,7 +62,9 @@ class AuthRepositoryImpl implements AuthRepository {
       loginResult.accessToken!.token,
     );
 
-    return _authService.signInWithCredentials(facebookAuthCredential);
+    await _authService.signInWithCredentials(facebookAuthCredential);
+
+    await _userProfileService.getOrCreateUserProfile(_authService.currentUser!);
   }
 
   @override
@@ -73,21 +84,26 @@ class AuthRepositoryImpl implements AuthRepository {
 
     // Once signed in, return the UserCredential
     await _authService.signInWithCredentials(credential);
+
+    await _userProfileService.getOrCreateUserProfile(_authService.currentUser!);
   }
 
   @override
-  Future<void> changeDisplayName(String displayName) {
-    return _authService.changeDisplayName(displayName);
+  Future<void> changeDisplayName(String displayName) async {
+    await _authService.changeDisplayName(displayName);
+    await _userProfileService.updateUserProfile(_authService.currentUser!);
   }
 
   @override
-  Future<void> changeEmail(String email) {
-    return _authService.changeEmail(email);
+  Future<void> changeEmail(String email) async {
+    await _authService.changeEmail(email);
+    await _userProfileService.updateUserProfile(_authService.currentUser!);
   }
 
   @override
-  Future<void> changePassword(String password) {
-    return _authService.changePassword(password);
+  Future<void> changePassword(String password) async {
+    await _authService.changePassword(password);
+    await _userProfileService.updateUserProfile(_authService.currentUser!);
   }
 
   @override
@@ -99,5 +115,12 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> saveProfilePhoto(File photo) async {
     final downloadUrl = await _storageService.uploadProfilePhoto(photo, _authService.currentUser!);
     await _authService.changeProfilePhoto(downloadUrl);
+    await _userProfileService.updateUserProfile(_authService.currentUser!);
   }
+
+  @override
+  Future<void> changeBio(String bio) async {
+    await _userProfileService.updateUserProfile(_authService.currentUser!, bio);
+  }
+
 }

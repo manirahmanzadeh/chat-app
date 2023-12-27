@@ -25,6 +25,8 @@ abstract class AuthRepository {
 
   Future<void> changeEmail(String email);
 
+  Future<void> changeBio(String bio);
+
   Future<void> sendVerifyEmail();
 
   Future<void> saveProfilePhoto(File photo);
