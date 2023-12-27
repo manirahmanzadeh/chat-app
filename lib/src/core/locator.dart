@@ -14,22 +14,34 @@ import 'package:chatapp/src/features/auth/domain/usecases/signout.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/signup_email_password.dart';
 import 'package:chatapp/src/features/auth/presentation/account/bloc/profile_bloc.dart';
 import 'package:chatapp/src/features/auth/presentation/bloc/auth/auth_bloc.dart';
+import 'package:chatapp/src/features/chats/data/data_sources/chats_service.dart';
+import 'package:chatapp/src/features/chats/data/repository/chats_repository_impl.dart';
+import 'package:chatapp/src/features/chats/domain/repository/chats_repository.dart';
+import 'package:chatapp/src/features/chats/domain/usecases/get_chats_usecase.dart';
+import 'package:chatapp/src/features/chats/presentation/home/bloc/home_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 final locator = GetIt.instance;
 
 Future<void> initializeDependencies() async {
-  /// Dependencies
-
-  /// Auth:
+  /// * Dependencies
+  ///
+  /// ** Auth:
   locator.registerSingleton<FirebaseAuthService>(FirebaseAuthService());
   locator.registerSingleton<FirebaseStorageService>(FirebaseStorageService());
   locator.registerSingleton<UserProfileService>(UserProfileService());
   locator.registerSingleton<AuthRepository>(AuthRepositoryImpl(locator(), locator(), locator()));
 
-  ///UseCases
+  ///
+  /// ** Chats:
+  locator.registerSingleton<ChatsService>(ChatsService());
+  locator.registerSingleton<ChatsRepository>(ChatsRepositoryImpl(locator(), locator()));
 
-  ///Auth:
+  ///
+  ///
+  /// * UseCases:
+  ///
+  /// ** Auth:
   locator.registerSingleton<SignInWithEmailAndPasswordUseCase>(SignInWithEmailAndPasswordUseCase(locator()));
   locator.registerSingleton<SignUpWithEmailAndPasswordUseCase>(SignUpWithEmailAndPasswordUseCase(locator()));
   locator.registerSingleton<SignOutUseCase>(SignOutUseCase(locator()));
@@ -43,12 +55,20 @@ Future<void> initializeDependencies() async {
   locator.registerSingleton<SendVerifyEmailUseCase>(SendVerifyEmailUseCase(locator()));
   locator.registerSingleton<ChangeProfilePhotoUseCase>(ChangeProfilePhotoUseCase(locator()));
 
-  ///Blocs
+  ///
+  /// ** Chats:
+  locator.registerSingleton<GetChatsUseCase>(GetChatsUseCase(locator()));
 
-  ///Global:
+  /// * Blocs:
+  ///
+  /// ** Global:
   locator.registerFactory<LocaleBloc>(() => LocaleBloc());
   locator.registerFactory<AuthBloc>(() => AuthBloc(locator(), locator(), locator(), locator(), locator(), locator(), locator()));
   locator.registerFactory<ProfileBloc>(() => ProfileBloc(locator(), locator(), locator(), locator(), locator()));
 
-  ///Features:
+  ///
+  /// ** Features:
+  ///
+  /// *** Chats:
+  locator.registerFactory<HomeBloc>(() => HomeBloc(locator(), locator()));
 }

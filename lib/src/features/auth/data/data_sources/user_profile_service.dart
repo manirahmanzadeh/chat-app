@@ -8,14 +8,16 @@ class UserProfileService {
 
   UserProfileEntity? get currentProfile => _userProfile;
 
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
   Future<void> getOrCreateUserProfile(User user) async {
     DocumentSnapshot userSnapshot =
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).get().onError((error, stackTrace) => throw (Exception(error)));
+        await _firebaseFirestore.collection('users').doc(user.uid).get().onError((error, stackTrace) => throw (Exception(error)));
 
     if (userSnapshot.exists) {
       _userProfile = UserProfileModel.fromDocumentSnapshot(userSnapshot);
     } else {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+      await _firebaseFirestore.collection('users').doc(user.uid).set({
         'uid': user.uid,
         'email': user.email,
         'displayName': user.displayName,
@@ -39,11 +41,7 @@ class UserProfileService {
         'photoURL': user.photoURL,
         'bio': bio,
       };
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .update(userData)
-          .onError((error, stackTrace) => throw (Exception(error)));
+      await _firebaseFirestore.collection('users').doc(user.uid).update(userData).onError((error, stackTrace) => throw (Exception(error)));
       _userProfile = UserProfileModel.fromJson(userData);
     }
   }

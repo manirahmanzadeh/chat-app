@@ -1,12 +1,12 @@
-import 'package:chatapp/src/features/chats/presentation/home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/send_recovery_email_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/signin_facebook_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/signing_google_usecase.dart';
 import 'package:chatapp/src/features/auth/presentation/register/screens/login_screen.dart';
+import 'package:chatapp/src/features/chats/presentation/home/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/usecases/signin_email_password.dart';
 import '../../../domain/usecases/signout.dart';

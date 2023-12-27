@@ -1,3 +1,7 @@
+import 'package:chatapp/src/features/chats/domain/entities/chat_entity.dart';
+
 abstract class ChatsRepository {
-  Future<void> getChats(String email, String password);
+  Stream<List<ChatEntity>> getChats();
+
+  Future<void> createChat();
 }

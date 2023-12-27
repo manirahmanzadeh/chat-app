@@ -26,6 +26,8 @@ dependencies:
     sdk: flutter
   intl: any
   cloud_firestore: ^4.13.6
+  cached_network_image: ^3.3.0
+
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,7 @@
 import 'package:chatapp/src/core/app.dart';
 import 'package:chatapp/src/core/locator.dart';
 import 'package:chatapp/src/features/auth/presentation/register/screens/login_screen.dart';
-import 'package:chatapp/src/features/chats/presentation/home_screen.dart';
+import 'package:chatapp/src/features/chats/presentation/home/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
