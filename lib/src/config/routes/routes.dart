@@ -1,3 +1,6 @@
+import 'package:chatapp/src/core/locator.dart';
+import 'package:chatapp/src/features/auth/data/data_sources/user_profile_service.dart';
+import 'package:chatapp/src/features/auth/domain/repository/auth_repository.dart';
 import 'package:chatapp/src/features/auth/presentation/account/screens/changename_screen.dart';
 import 'package:chatapp/src/features/auth/presentation/account/screens/changepasword_screen.dart';
 import 'package:chatapp/src/features/auth/presentation/account/screens/email_screen.dart';
@@ -18,6 +21,14 @@ class AppRoutes {
     EmailScreen.routeName: (context) => const EmailScreen(),
     ChangePasswordScreen.routeName: (context) => const ChangePasswordScreen(),
 
-    HomeScreen.routeName: (context) => const HomeScreen(),
+    HomeScreen.routeName: (context) {
+      final currentUser = locator<AuthRepository>().getCurrentUser();
+      if(currentUser != null){
+        locator<UserProfileService>().getOrCreateUserProfile(currentUser);
+        return const HomeScreen();
+      } else {
+        return const LoginScreen();
+      }
+    },
   };
 }

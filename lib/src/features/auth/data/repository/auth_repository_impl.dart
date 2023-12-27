@@ -22,13 +22,11 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> createUserWithEmailAndPassword(String email, String password) async {
     await _authService.createUserWithEmailAndPassword(email: email, password: password);
-    await _userProfileService.getOrCreateUserProfile(_authService.currentUser!);
   }
 
   @override
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     await _authService.signInWithEmailAndPassword(email: email, password: password);
-    await _userProfileService.getOrCreateUserProfile(_authService.currentUser!);
   }
 
   @override
@@ -64,7 +62,6 @@ class AuthRepositoryImpl implements AuthRepository {
 
     await _authService.signInWithCredentials(facebookAuthCredential);
 
-    await _userProfileService.getOrCreateUserProfile(_authService.currentUser!);
   }
 
   @override
@@ -85,7 +82,6 @@ class AuthRepositoryImpl implements AuthRepository {
     // Once signed in, return the UserCredential
     await _authService.signInWithCredentials(credential);
 
-    await _userProfileService.getOrCreateUserProfile(_authService.currentUser!);
   }
 
   @override
