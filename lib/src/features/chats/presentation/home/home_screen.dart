@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/src/core/components/drawer.dart';
 import 'package:chatapp/src/core/locator.dart';
 import 'package:chatapp/src/features/chats/domain/entities/chat_entity.dart';
+import 'package:chatapp/src/features/chats/presentation/contacts/contacts_screen.dart';
 import 'package:chatapp/src/features/chats/presentation/home/bloc/home_bloc.dart';
 import 'package:chatapp/src/features/chats/presentation/home/bloc/home_event.dart';
 import 'package:chatapp/src/features/chats/presentation/home/bloc/home_state.dart';
@@ -81,6 +82,10 @@ class _HomeScreen extends StatelessWidget {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.pushNamed(context, ContactsScreen.routeName),
+        child: const Icon(Icons.add),
       ),
     );
   }

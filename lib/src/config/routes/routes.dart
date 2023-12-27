@@ -8,6 +8,7 @@ import 'package:chatapp/src/features/auth/presentation/account/screens/profile_s
 import 'package:chatapp/src/features/auth/presentation/register/screens/forget_password_screen.dart';
 import 'package:chatapp/src/features/auth/presentation/register/screens/login_screen.dart';
 import 'package:chatapp/src/features/auth/presentation/register/screens/signup_screen.dart';
+import 'package:chatapp/src/features/chats/presentation/contacts/contacts_screen.dart';
 import 'package:chatapp/src/features/chats/presentation/home/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class AppRoutes {
     ChangeNameScreen.routeName: (context) => const ChangeNameScreen(),
     EmailScreen.routeName: (context) => const EmailScreen(),
     ChangePasswordScreen.routeName: (context) => const ChangePasswordScreen(),
+    ContactsScreen.routeName: (context) => const ContactsScreen(),
     HomeScreen.routeName: (context) {
       final currentUser = locator<AuthRepository>().getCurrentUser();
       if (currentUser != null) {
