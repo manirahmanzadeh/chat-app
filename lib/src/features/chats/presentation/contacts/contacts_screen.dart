@@ -16,7 +16,9 @@ class ContactsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ContactsBloc>(
-      create: (_) => locator()..add(const GetContactsContactEvent()),
+      create: (_) => locator()
+        ..addContext(context)
+        ..add(const GetContactsContactEvent()),
       child: const _ContactsScreen(),
     );
   }
@@ -27,6 +29,7 @@ class _ContactsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final staticBlocProvider = BlocProvider.of<ContactsBloc>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contacts'),
@@ -48,6 +51,7 @@ class _ContactsScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               UserProfileEntity contact = state.contacts![index];
               return ListTile(
+                onTap: () => staticBlocProvider.add(CreateChatContactsEvent(state.contacts![index], state.contacts!)),
                 leading: CircleAvatar(
                   child: CachedNetworkImage(imageUrl: contact.photoURL ?? ''),
                 ),

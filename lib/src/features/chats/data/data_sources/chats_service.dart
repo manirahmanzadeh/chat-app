@@ -27,11 +27,29 @@ class ChatsService {
     return data;
   }
 
-  Future<void> createChat(UserProfileEntity currentUser, UserProfileEntity otherUser) {
-    return _firebaseFirestore.collection('chats').add({
+  Future<void> createChat(UserProfileEntity currentUser, UserProfileEntity otherUser) async {
+    // Check if the chat already exists
+    QuerySnapshot query = await _firebaseFirestore
+        .collection('chats')
+        .where('participants', arrayContainsAny: [currentUser.uid, otherUser.uid])
+        .get()
+        .onError((error, stackTrace) => throw (Exception(error)));
+
+    print('got chats');
+    print('query docs:');
+    print(query.docs);
+    if (query.docs.isNotEmpty) {
+      // Chat already exists, do not create a new one
+      return;
+    }
+
+    // Chat doesn't exist, create a new one
+    await _firebaseFirestore.collection('chats').add({
       'participants': [currentUser.uid, otherUser.uid],
       'displayNames': [currentUser.displayName, otherUser.displayName],
       'imageUrls': [currentUser.photoURL, otherUser.photoURL]
-    }).onError((error, stackTrace) => throw (Exception(error)));
+    }).catchError((error) {
+      throw Exception(error);
+    });
   }
 }

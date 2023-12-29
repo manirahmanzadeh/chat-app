@@ -17,7 +17,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomeBloc>(
-      create: (_) => locator()..add(const GetChatsHomeEvent()),
+      create: (_) => locator()
+        ..addContext(context)
+        ..add(const GetChatsHomeEvent()),
       child: const _HomeScreen(),
     );
   }
@@ -28,6 +30,7 @@ class _HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final staticBlocProvider = BlocProvider.of<HomeBloc>(context, listen: false);
     return Scaffold(
       appBar: AppBar(),
       drawer: const AppDrawer(),
@@ -70,6 +73,7 @@ class _HomeScreen extends StatelessWidget {
                     );
                     final otherUserIndex = chat.participants.indexOf(otherParticipantUid);
                     return ListTile(
+                      onTap: () => staticBlocProvider.goToChat(chat),
                       leading: CircleAvatar(
                         child: CachedNetworkImage(imageUrl: chat.imageUrls[otherUserIndex]),
                       ),
