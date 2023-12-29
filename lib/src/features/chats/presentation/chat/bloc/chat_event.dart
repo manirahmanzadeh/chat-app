@@ -9,3 +9,9 @@ class LoadChatEvent implements ChatEvent {
 
   const LoadChatEvent(this.chat);
 }
+
+class SendMessageChatEvent implements ChatEvent {
+  final String text;
+
+  const SendMessageChatEvent(this.text);
+}

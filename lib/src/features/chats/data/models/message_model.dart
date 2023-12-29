@@ -1,11 +1,12 @@
 import 'package:chatapp/src/features/chats/domain/entities/message_entity.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MessageModel extends MessageEntity {
   const MessageModel({
     required String messageId,
     required String senderUid,
     required String text,
-    required DateTime timestamp,
+    required Timestamp timestamp,
     bool edited = false,
   }) : super(
           senderUid: senderUid,
@@ -20,7 +21,7 @@ class MessageModel extends MessageEntity {
       messageId: id,
       senderUid: data['senderUid'],
       text: data['text'],
-      timestamp: DateTime.parse(data['timestamp']),
+      timestamp: data['timestamp'] ?? Timestamp.now(),
       edited: data['edited'] ?? false,
     );
   }

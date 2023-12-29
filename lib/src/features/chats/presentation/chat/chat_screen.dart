@@ -34,8 +34,9 @@ class _ChatScreen extends StatelessWidget {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (_, state) {
         if (state is LoadingChatState) {
-          return const Scaffold(
-            body: Center(
+          return Scaffold(
+            backgroundColor: Colors.white.withOpacity(0.9),
+            body: const Center(
               child: CircularProgressIndicator(),
             ),
           );
@@ -43,6 +44,7 @@ class _ChatScreen extends StatelessWidget {
 
         if (state is ErrorChatState) {
           return Scaffold(
+            backgroundColor: Colors.white.withOpacity(0.9),
             body: Center(
               child: Text('Error: ${state.exception.toString()}'),
             ),
@@ -57,6 +59,7 @@ class _ChatScreen extends StatelessWidget {
         );
         final otherUserIndex = chat.participants.indexOf(otherParticipantUid);
         return Scaffold(
+          backgroundColor: Colors.white.withOpacity(0.9),
           appBar: AppBar(
             title: Row(
               children: [
@@ -94,6 +97,7 @@ class _ChatScreen extends StatelessWidget {
                     } else {
                       return ListView.builder(
                         itemCount: snapshot.data!.length,
+                        reverse: true,
                         itemBuilder: (context, index) {
                           MessageEntity message = snapshot.data![index];
                           return MessageBubble(
@@ -107,7 +111,7 @@ class _ChatScreen extends StatelessWidget {
                   },
                 ),
               ),
-              ChatInput(onSendMessage: (_) {}),
+              ChatInput(onSendMessage: (text) => staticBlocProvider.add(SendMessageChatEvent(text))),
             ],
           ),
         );

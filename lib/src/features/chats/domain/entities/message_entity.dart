@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class MessageEntity extends Equatable {
   final String messageId;
   final String senderUid;
   final String text;
-  final DateTime timestamp;
+  final Timestamp timestamp;
   final bool edited;
 
   const MessageEntity({

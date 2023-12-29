@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-String formatDateTime(DateTime dateTime) {
+String formatDateTime(Timestamp? timestamp) {
+  if (timestamp == null) {
+    return '';
+  }
+  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
   DateTime now = DateTime.now();
   DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
 
