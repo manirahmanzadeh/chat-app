@@ -20,6 +20,7 @@ import 'package:chatapp/src/features/chats/domain/repository/chats_repository.da
 import 'package:chatapp/src/features/chats/domain/usecases/create_chat_usecase.dart';
 import 'package:chatapp/src/features/chats/domain/usecases/get_chats_usecase.dart';
 import 'package:chatapp/src/features/chats/domain/usecases/get_contacts_usecase.dart';
+import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_bloc.dart';
 import 'package:chatapp/src/features/chats/presentation/contacts/bloc/contacts_bloc.dart';
 import 'package:chatapp/src/features/chats/presentation/home/bloc/home_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -77,4 +78,5 @@ Future<void> initializeDependencies() async {
   /// *** Chats:
   locator.registerFactory<HomeBloc>(() => HomeBloc(locator(), locator()));
   locator.registerFactory<ContactsBloc>(() => ContactsBloc(locator(), locator()));
+  locator.registerFactory<ChatBloc>(() => ChatBloc(locator()));
 }

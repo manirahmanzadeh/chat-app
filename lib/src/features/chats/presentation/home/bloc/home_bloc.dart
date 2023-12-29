@@ -1,4 +1,4 @@
-import 'package:chatapp/src/features/auth/data/data_sources/firebase_auth_service.dart';
+import 'package:chatapp/src/features/auth/domain/repository/auth_repository.dart';
 import 'package:chatapp/src/features/chats/domain/entities/chat_entity.dart';
 import 'package:chatapp/src/features/chats/domain/usecases/get_chats_usecase.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/chat_screen.dart';
@@ -11,15 +11,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   late BuildContext _context;
   final GetChatsUseCase _getChatsUseCase;
-  final FirebaseAuthService _firebaseAuthService;
+  final AuthRepository _authRepository;
 
-  User get currentUser => _firebaseAuthService.currentUser!;
+  User get currentUser => _authRepository.getCurrentUser()!;
 
   addContext(BuildContext context) {
     _context = context;
   }
 
-  HomeBloc(this._getChatsUseCase, this._firebaseAuthService) : super(const LoadingHomeState()) {
+  HomeBloc(this._getChatsUseCase, this._authRepository) : super(const LoadingHomeState()) {
     on<GetChatsHomeEvent>(onGetChats);
   }
 
