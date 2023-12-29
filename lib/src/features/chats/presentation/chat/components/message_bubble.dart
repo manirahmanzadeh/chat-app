@@ -64,9 +64,11 @@ class MessageBubble extends StatelessWidget {
                         child: Text(
                           displayName!,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                                color: Theme.of(context).colorScheme.onBackground,
-                              ),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black38,
+                          ),
                         ),
                       ),
                     ],
