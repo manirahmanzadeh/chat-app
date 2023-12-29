@@ -32,7 +32,9 @@ class _HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final staticBlocProvider = BlocProvider.of<HomeBloc>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Chat App'),
+      ),
       drawer: const AppDrawer(),
       body: BlocBuilder<HomeBloc, HomeState>(
         builder: (_, state) {

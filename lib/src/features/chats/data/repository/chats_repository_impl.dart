@@ -17,10 +17,10 @@ class ChatsRepositoryImpl implements ChatsRepository {
   );
 
   @override
-  Future<void> createChat(UserProfileEntity otherUser) {
+  Future<ChatModel> createChat(UserProfileEntity otherUser) async {
     final user = _userProfileService.currentProfile;
     if (user != null) {
-      return _chatsService.createChat(user, otherUser);
+      return await _chatsService.createChat(user, otherUser);
     }
     throw Exception('User does not exist!');
   }

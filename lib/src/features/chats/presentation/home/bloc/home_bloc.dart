@@ -38,6 +38,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   goToChat(ChatEntity chat) {
-    Navigator.pushNamed(_context, ChatScreen.routeName);
+    Navigator.pushNamed(_context, ChatScreen.routeName, arguments: chat);
   }
 }

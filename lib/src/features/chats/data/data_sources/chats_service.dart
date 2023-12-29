@@ -27,29 +27,28 @@ class ChatsService {
     return data;
   }
 
-  Future<void> createChat(UserProfileEntity currentUser, UserProfileEntity otherUser) async {
+  Future<ChatModel> createChat(UserProfileEntity currentUser, UserProfileEntity otherUser) async {
     // Check if the chat already exists
     QuerySnapshot query = await _firebaseFirestore
         .collection('chats')
-        .where('participants', arrayContainsAny: [currentUser.uid, otherUser.uid])
+        .where('participants', arrayContainsAny: [currentUser.uid])
         .get()
         .onError((error, stackTrace) => throw (Exception(error)));
 
-    print('got chats');
-    print('query docs:');
-    print(query.docs);
-    if (query.docs.isNotEmpty) {
+    final hasChatWithOtherUser = query.docs.any((element) => List<String>.from(element['participants'] ?? []).contains(otherUser.uid));
+    if (hasChatWithOtherUser) {
       // Chat already exists, do not create a new one
-      return;
+      return ChatModel.fromDocumentSnapshot(
+          query.docs.singleWhere((element) => List<String>.from(element['participants'] ?? []).contains(otherUser.uid)));
     }
 
     // Chat doesn't exist, create a new one
-    await _firebaseFirestore.collection('chats').add({
+    DocumentReference docRef = await _firebaseFirestore.collection('chats').add({
       'participants': [currentUser.uid, otherUser.uid],
       'displayNames': [currentUser.displayName, otherUser.displayName],
       'imageUrls': [currentUser.photoURL, otherUser.photoURL]
-    }).catchError((error) {
-      throw Exception(error);
-    });
+    }).onError((error, stackTrace) => throw (Exception(error)));
+    final doc = await docRef.get().onError((error, stackTrace) => throw (Exception(error)));
+    return ChatModel.fromDocumentSnapshot(doc);
   }
 }

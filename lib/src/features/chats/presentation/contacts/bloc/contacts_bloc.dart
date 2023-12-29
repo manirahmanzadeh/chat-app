@@ -43,8 +43,8 @@ class ContactsBloc extends Bloc<ContactEvent, ContactsState> {
       const LoadingContactsState(),
     );
     try {
-      await _createChatUseCase(params: event.targetUser);
-      Navigator.pushNamed(_context, ChatScreen.routeName);
+      final chat = await _createChatUseCase(params: event.targetUser);
+      Navigator.pushNamed(_context, ChatScreen.routeName, arguments: chat);
       emit(LoadedContactsState(event.loadedProfiles));
     } on Exception catch (e) {
       emit(

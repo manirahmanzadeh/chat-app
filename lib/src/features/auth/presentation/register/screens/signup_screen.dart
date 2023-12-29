@@ -1,8 +1,9 @@
+import 'package:chatapp/src/core/components/app_secure_text_form_field.dart';
+import 'package:chatapp/src/core/components/app_text_form_field.dart';
+import 'package:chatapp/src/core/utils/validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:chatapp/src/core/components/app_text_form_field.dart';
-import 'package:chatapp/src/core/utils/validators.dart';
 
 import '../../../../../core/components/app_button.dart';
 import '../../bloc/auth/auth_bloc.dart';
@@ -88,8 +89,8 @@ class _SignUpScreen extends StatelessWidget {
                   const SizedBox(
                     height: 8,
                   ),
-                  AppTextFormField(
-                    hint: 'Password',
+                  AppSecureTextFormField(
+                    title: 'Password',
                     icon: 'assets/icons/passphrase.svg',
                     validator: AppValidator.passwordValidator,
                     onSaved: registerBloc.onSavedPassword,
