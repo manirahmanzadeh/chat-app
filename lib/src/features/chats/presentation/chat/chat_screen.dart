@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/src/core/locator.dart';
 import 'package:chatapp/src/features/chats/domain/entities/chat_entity.dart';
+import 'package:chatapp/src/features/chats/domain/entities/message_entity.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_bloc.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_event.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_state.dart';
+import 'package:chatapp/src/features/chats/presentation/chat/components/chat_input.dart';
+import 'package:chatapp/src/features/chats/presentation/chat/components/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,8 +42,10 @@ class _ChatScreen extends StatelessWidget {
         }
 
         if (state is ErrorChatState) {
-          return Center(
-            child: Text('Error: ${state.exception.toString()}'),
+          return Scaffold(
+            body: Center(
+              child: Text('Error: ${state.exception.toString()}'),
+            ),
           );
         }
 
@@ -67,6 +72,43 @@ class _ChatScreen extends StatelessWidget {
                 Text(chat.displayNames[otherUserIndex])
               ],
             ),
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                child: StreamBuilder<List<MessageEntity>>(
+                  stream: state.messagesStream!,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      );
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text('Send a Message'),
+                      );
+                    } else {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          MessageEntity message = snapshot.data![index];
+                          return MessageBubble(
+                            message: message,
+                            myMessage: message.senderUid == currentUser.uid,
+                            displayName: chat.displayNames[otherUserIndex],
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
+              ),
+              ChatInput(onSendMessage: (_) {}),
+            ],
           ),
         );
       },

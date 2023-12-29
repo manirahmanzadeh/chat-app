@@ -27,6 +27,7 @@ dependencies:
   intl: any
   cloud_firestore: ^4.13.6
   cached_network_image: ^3.3.0
+  flutter_chat_bubble: ^2.0.2
 
 
 dev_dependencies:

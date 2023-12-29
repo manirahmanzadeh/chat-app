@@ -14,12 +14,19 @@ import 'package:chatapp/src/features/auth/domain/usecases/signout.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/signup_email_password.dart';
 import 'package:chatapp/src/features/auth/presentation/account/bloc/profile_bloc.dart';
 import 'package:chatapp/src/features/auth/presentation/bloc/auth/auth_bloc.dart';
+import 'package:chatapp/src/features/chats/data/data_sources/chat_service.dart';
 import 'package:chatapp/src/features/chats/data/data_sources/chats_service.dart';
+import 'package:chatapp/src/features/chats/data/repository/chat_repository_impl.dart';
 import 'package:chatapp/src/features/chats/data/repository/chats_repository_impl.dart';
+import 'package:chatapp/src/features/chats/domain/repository/chat_repository.dart';
 import 'package:chatapp/src/features/chats/domain/repository/chats_repository.dart';
 import 'package:chatapp/src/features/chats/domain/usecases/create_chat_usecase.dart';
+import 'package:chatapp/src/features/chats/domain/usecases/delete_message_usecase.dart';
+import 'package:chatapp/src/features/chats/domain/usecases/edit_message_usecase.dart';
 import 'package:chatapp/src/features/chats/domain/usecases/get_chats_usecase.dart';
 import 'package:chatapp/src/features/chats/domain/usecases/get_contacts_usecase.dart';
+import 'package:chatapp/src/features/chats/domain/usecases/get_messages_usecase.dart';
+import 'package:chatapp/src/features/chats/domain/usecases/send_message_usecase.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_bloc.dart';
 import 'package:chatapp/src/features/chats/presentation/contacts/bloc/contacts_bloc.dart';
 import 'package:chatapp/src/features/chats/presentation/home/bloc/home_bloc.dart';
@@ -39,7 +46,9 @@ Future<void> initializeDependencies() async {
   ///
   /// ** Chats:
   locator.registerSingleton<ChatsService>(ChatsService());
+  locator.registerSingleton<ChatService>(ChatService());
   locator.registerSingleton<ChatsRepository>(ChatsRepositoryImpl(locator(), locator(), locator()));
+  locator.registerSingleton<ChatRepository>(ChatRepositoryImpl(locator()));
 
   ///
   ///
@@ -64,6 +73,10 @@ Future<void> initializeDependencies() async {
   locator.registerSingleton<GetChatsUseCase>(GetChatsUseCase(locator()));
   locator.registerSingleton<GetContactsUseCase>(GetContactsUseCase(locator()));
   locator.registerSingleton<CreateChatUseCase>(CreateChatUseCase(locator()));
+  locator.registerSingleton<SendMessageUseCase>(SendMessageUseCase(locator()));
+  locator.registerSingleton<GetMessagesUseCase>(GetMessagesUseCase(locator()));
+  locator.registerSingleton<DeleteMessageUseCase>(DeleteMessageUseCase(locator()));
+  locator.registerSingleton<EditMessageUseCase>(EditMessageUseCase(locator()));
 
   /// * Blocs:
   ///
@@ -78,5 +91,5 @@ Future<void> initializeDependencies() async {
   /// *** Chats:
   locator.registerFactory<HomeBloc>(() => HomeBloc(locator(), locator()));
   locator.registerFactory<ContactsBloc>(() => ContactsBloc(locator(), locator()));
-  locator.registerFactory<ChatBloc>(() => ChatBloc(locator()));
+  locator.registerFactory<ChatBloc>(() => ChatBloc(locator(), locator()));
 }

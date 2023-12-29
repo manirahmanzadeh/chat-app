@@ -22,7 +22,11 @@ class ChatsService {
   }
 
   Future<List<UserProfileModel>> getContacts(User user) async {
-    final query = await _firebaseFirestore.collection('users').where('uid', isNotEqualTo: user.uid).get();
+    final query = await _firebaseFirestore
+        .collection('users')
+        .where('uid', isNotEqualTo: user.uid)
+        .get()
+        .onError((error, stackTrace) => throw (Exception(error)));
     List<UserProfileModel> data = query.docs.map((e) => UserProfileModel.fromDocumentSnapshot(e)).toList();
     return data;
   }
