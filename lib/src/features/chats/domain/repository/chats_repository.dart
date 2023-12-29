@@ -6,5 +6,5 @@ abstract class ChatsRepository {
 
   Future<void> createChat(UserProfileEntity otherUser);
 
-  Stream<List<UserProfileEntity>> getContacts();
+  Future<List<UserProfileEntity>> getContacts();
 }

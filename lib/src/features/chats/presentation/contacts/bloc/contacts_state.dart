@@ -2,13 +2,13 @@ import 'package:chatapp/src/features/auth/domain/entities/user_profile_entity.da
 import 'package:equatable/equatable.dart';
 
 abstract class ContactsState extends Equatable {
-  final Stream<List<UserProfileEntity>>? contactsStream;
+  final List<UserProfileEntity>? contacts;
   final Exception? exception;
 
-  const ContactsState({this.contactsStream, this.exception});
+  const ContactsState({this.contacts, this.exception});
 
   @override
-  List<Object> get props => [contactsStream!, exception!];
+  List<Object> get props => [contacts!, exception!];
 }
 
 class LoadingContactsState extends ContactsState {
@@ -16,7 +16,7 @@ class LoadingContactsState extends ContactsState {
 }
 
 class LoadedContactsState extends ContactsState {
-  const LoadedContactsState(Stream<List<UserProfileEntity>> contactsStream) : super(contactsStream: contactsStream);
+  const LoadedContactsState(List<UserProfileEntity> contacts) : super(contacts: contacts);
 }
 
 class ErrorContactsState extends ContactsState {

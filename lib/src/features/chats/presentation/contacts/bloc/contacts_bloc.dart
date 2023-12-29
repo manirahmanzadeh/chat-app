@@ -8,16 +8,17 @@ class ContactsBloc extends Bloc<ContactEvent, ContactsState> {
   final GetContactsUseCase _getContactsUseCase;
 
   ContactsBloc(this._getContactsUseCase) : super(const LoadingContactsState()) {
-    on<GetContactsContactEvent>(onGetChats);
+    on<GetContactsContactEvent>(onGetContacts);
   }
 
-  void onGetChats(GetContactsContactEvent event, Emitter<ContactsState> emit) async {
+  void onGetContacts(GetContactsContactEvent event, Emitter<ContactsState> emit) async {
     emit(
       const LoadingContactsState(),
     );
     try {
-      final contactsStream = _getContactsUseCase();
-      emit(LoadedContactsState(contactsStream));
+      print('getting contacts');
+      final contacts = await _getContactsUseCase();
+      emit(LoadedContactsState(contacts));
     } on Exception catch (e) {
       emit(
         ErrorContactsState(e),

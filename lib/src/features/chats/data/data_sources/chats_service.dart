@@ -21,12 +21,10 @@ class ChatsService {
     });
   }
 
-  Stream<List<UserProfileModel>> getContacts(User user) {
-    return _firebaseFirestore.collection('users').where('uid', isNotEqualTo: user.uid).snapshots().map((QuerySnapshot snapshot) {
-      return snapshot.docs.map((DocumentSnapshot doc) {
-        return UserProfileModel.fromDocumentSnapshot(doc);
-      }).toList();
-    });
+  Future<List<UserProfileModel>> getContacts(User user) async {
+    final query = await _firebaseFirestore.collection('users').where('uid', isNotEqualTo: user.uid).get();
+    List<UserProfileModel> data = query.docs.map((e) => UserProfileModel.fromDocumentSnapshot(e)).toList();
+    return data;
   }
 
   Future<void> createChat(UserProfileEntity currentUser, UserProfileEntity otherUser) {

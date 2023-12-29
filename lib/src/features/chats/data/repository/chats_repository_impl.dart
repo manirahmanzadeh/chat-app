@@ -35,7 +35,7 @@ class ChatsRepositoryImpl implements ChatsRepository {
   }
 
   @override
-  Stream<List<UserProfileEntity>> getContacts() {
+  Future<List<UserProfileEntity>> getContacts() {
     final user = _firebaseAuthService.currentUser;
     if (user != null) {
       return _chatsService.getContacts(user);

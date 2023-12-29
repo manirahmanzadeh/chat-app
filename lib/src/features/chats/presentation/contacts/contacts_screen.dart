@@ -6,6 +6,8 @@ import 'package:chatapp/src/features/chats/presentation/contacts/bloc/contacts_s
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/contacts_event.dart';
+
 class ContactsScreen extends StatelessWidget {
   const ContactsScreen({super.key});
 
@@ -14,7 +16,7 @@ class ContactsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ContactsBloc>(
-      create: (_) => locator(),
+      create: (_) => locator()..add(const GetContactsContactEvent()),
       child: const _ContactsScreen(),
     );
   }
@@ -31,7 +33,7 @@ class _ContactsScreen extends StatelessWidget {
       ),
       body: BlocBuilder<ContactsBloc, ContactsState>(
         builder: (_, state) {
-          if (state is LoadedContactsState) {
+          if (state is LoadingContactsState) {
             return const Center(
               child: CircularProgressIndicator(),
             );
@@ -41,36 +43,17 @@ class _ContactsScreen extends StatelessWidget {
               child: Text('Error: ${state.exception.toString()}'),
             );
           }
-          return StreamBuilder<List<UserProfileEntity>>(
-            stream: state.contactsStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Text('No contacts available'),
-                );
-              } else {
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    UserProfileEntity contact = snapshot.data![index];
-                    return ListTile(
-                      leading: CircleAvatar(
-                        child: CachedNetworkImage(imageUrl: contact.photoURL ?? ''),
-                      ),
-                      title: Text(contact.displayName ?? contact.uid),
-                      // Add more widgets to display other chat information
-                    );
-                  },
-                );
-              }
+          return ListView.builder(
+            itemCount: state.contacts!.length,
+            itemBuilder: (context, index) {
+              UserProfileEntity contact = state.contacts![index];
+              return ListTile(
+                leading: CircleAvatar(
+                  child: CachedNetworkImage(imageUrl: contact.photoURL ?? ''),
+                ),
+                title: Text(contact.displayName ?? contact.uid),
+                // Add more widgets to display other chat information
+              );
             },
           );
         },
