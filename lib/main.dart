@@ -1,6 +1,6 @@
 import 'package:chatapp/src/core/app.dart';
 import 'package:chatapp/src/core/locator.dart';
-import 'package:chatapp/src/features/auth/presentation/register/screens/login_screen.dart';
+import 'package:chatapp/src/features/auth/presentation/register/screens/signin_screen.dart';
 import 'package:chatapp/src/features/chats/presentation/home/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ Future<void> main() async {
   final isLoggedIn = locator<AuthRepository>().isLoggedIn();
   runApp(
     App(
-      initialRoute: isLoggedIn ? HomeScreen.routeName : LoginScreen.routeName,
+      initialRoute: isLoggedIn ? HomeScreen.routeName : SignInScreen.routeName,
     ),
   );
 }

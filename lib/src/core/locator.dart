@@ -7,11 +7,10 @@ import 'package:chatapp/src/features/auth/domain/repository/auth_repository.dart
 import 'package:chatapp/src/features/auth/domain/usecases/edit_user_usecases.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/send_recovery_email_usecase.dart';
-import 'package:chatapp/src/features/auth/domain/usecases/signin_email_password.dart';
-import 'package:chatapp/src/features/auth/domain/usecases/signin_facebook_usecase.dart';
-import 'package:chatapp/src/features/auth/domain/usecases/signing_google_usecase.dart';
+import 'package:chatapp/src/features/auth/domain/usecases/signin_code_usecase.dart';
+import 'package:chatapp/src/features/auth/domain/usecases/signin_credential_usecase.dart';
+import 'package:chatapp/src/features/auth/domain/usecases/signin_phone_number_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/signout.dart';
-import 'package:chatapp/src/features/auth/domain/usecases/signup_email_password.dart';
 import 'package:chatapp/src/features/auth/presentation/account/bloc/profile_bloc.dart';
 import 'package:chatapp/src/features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:chatapp/src/features/chats/data/data_sources/chat_service.dart';
@@ -55,13 +54,9 @@ Future<void> initializeDependencies() async {
   /// * UseCases:
   ///
   /// ** Auth:
-  locator.registerSingleton<SignInWithEmailAndPasswordUseCase>(SignInWithEmailAndPasswordUseCase(locator()));
-  locator.registerSingleton<SignUpWithEmailAndPasswordUseCase>(SignUpWithEmailAndPasswordUseCase(locator()));
   locator.registerSingleton<SignOutUseCase>(SignOutUseCase(locator()));
   locator.registerSingleton<GetCurrentUserUseCase>(GetCurrentUserUseCase(locator()));
   locator.registerSingleton<SendRecoveryEmailUseCase>(SendRecoveryEmailUseCase(locator()));
-  locator.registerSingleton<SignInWithGoogleUseCase>(SignInWithGoogleUseCase(locator()));
-  locator.registerSingleton<SignInWithFacebookUseCase>(SignInWithFacebookUseCase(locator()));
   locator.registerSingleton<ChangeDisplayNameUseCase>(ChangeDisplayNameUseCase(locator()));
   locator.registerSingleton<ChangeEmailUseCase>(ChangeEmailUseCase(locator()));
   locator.registerSingleton<ChangePasswordUseCase>(ChangePasswordUseCase(locator()));
@@ -77,12 +72,15 @@ Future<void> initializeDependencies() async {
   locator.registerSingleton<GetMessagesUseCase>(GetMessagesUseCase(locator()));
   locator.registerSingleton<DeleteMessageUseCase>(DeleteMessageUseCase(locator()));
   locator.registerSingleton<EditMessageUseCase>(EditMessageUseCase(locator()));
+  locator.registerSingleton<SignInPhoneNumberUseCase>(SignInPhoneNumberUseCase(locator()));
+  locator.registerSingleton<SignInCredentialUseCase>(SignInCredentialUseCase(locator()));
+  locator.registerSingleton<SignInCodeUseCase>(SignInCodeUseCase(locator()));
 
   /// * Blocs:
   ///
   /// ** Global:
   locator.registerFactory<LocaleBloc>(() => LocaleBloc());
-  locator.registerFactory<AuthBloc>(() => AuthBloc(locator(), locator(), locator(), locator(), locator(), locator(), locator()));
+  locator.registerFactory<AuthBloc>(() => AuthBloc(locator(), locator(), locator(), locator(), locator(), locator()));
   locator.registerFactory<ProfileBloc>(() => ProfileBloc(locator(), locator(), locator(), locator(), locator()));
 
   ///

@@ -1,29 +1,36 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 abstract class AuthEvent {
   const AuthEvent();
 }
 
-class SignInEmailPasswordAuthEvent extends AuthEvent {
-  final String email;
-  final String password;
+class SignInPhoneNumberAuthEvent extends AuthEvent {
+  final String phoneNumber;
   final BuildContext context;
 
-  const SignInEmailPasswordAuthEvent({
-    required this.email,
-    required this.password,
+  const SignInPhoneNumberAuthEvent({
+    required this.phoneNumber,
     required this.context,
   });
 }
 
-class SignUpEmailPasswordAuthEvent extends AuthEvent {
-  final String email;
-  final String password;
+class SignInCodeAuthEvent extends AuthEvent {
+  final String smsCode;
   final BuildContext context;
 
-  const SignUpEmailPasswordAuthEvent({
-    required this.email,
-    required this.password,
+  const SignInCodeAuthEvent({
+    required this.smsCode,
+    required this.context,
+  });
+}
+
+class SignInCredentialAuthEvent extends AuthEvent {
+  final AuthCredential credential;
+  final BuildContext context;
+
+  const SignInCredentialAuthEvent({
+    required this.credential,
     required this.context,
   });
 }
@@ -46,18 +53,14 @@ class SendRecoveryEmailAuthEvent extends AuthEvent {
   });
 }
 
-class SignInWithGoogleAuthEvent extends AuthEvent {
-  final BuildContext context;
+class ThrowExceptionAuthEvent extends AuthEvent {
+  final Exception exception;
 
-  const SignInWithGoogleAuthEvent({
-    required this.context,
+  const ThrowExceptionAuthEvent({
+    required this.exception,
   });
 }
 
-class SignInWithFacebookAuthEvent extends AuthEvent {
-  final BuildContext context;
-
-  const SignInWithFacebookAuthEvent({
-    required this.context,
-  });
+class LoadAuthEvent extends AuthEvent {
+  const LoadAuthEvent();
 }

@@ -1,111 +1,46 @@
+import 'dart:async';
+
 import 'package:chatapp/src/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/send_recovery_email_usecase.dart';
-import 'package:chatapp/src/features/auth/domain/usecases/signin_facebook_usecase.dart';
-import 'package:chatapp/src/features/auth/domain/usecases/signing_google_usecase.dart';
-import 'package:chatapp/src/features/auth/presentation/register/screens/login_screen.dart';
+import 'package:chatapp/src/features/auth/domain/usecases/signin_code_usecase.dart';
+import 'package:chatapp/src/features/auth/domain/usecases/signin_credential_usecase.dart';
+import 'package:chatapp/src/features/auth/domain/usecases/signin_phone_number_usecase.dart';
+import 'package:chatapp/src/features/auth/presentation/register/screens/signin_screen.dart';
+import 'package:chatapp/src/features/auth/presentation/register/screens/verification_screen.dart';
 import 'package:chatapp/src/features/chats/presentation/home/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/usecases/signin_email_password.dart';
 import '../../../domain/usecases/signout.dart';
-import '../../../domain/usecases/signup_email_password.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final SignInWithEmailAndPasswordUseCase _signInWithEmailAndPasswordUseCase;
-  final SignUpWithEmailAndPasswordUseCase _signUpWithEmailAndPasswordUseCase;
+  final SignInPhoneNumberUseCase _signInPhoneNumberUseCase;
+  final SignInCredentialUseCase _signInCredentialUseCase;
+  final SignInCodeUseCase _signInCodeUseCase;
   final SignOutUseCase _signOutUseCase;
   final GetCurrentUserUseCase _getCurrentUserUseCase;
   final SendRecoveryEmailUseCase _sendRecoveryEmailUseCase;
-  final SignInWithGoogleUseCase _signInWithGoogleUseCase;
-  final SignInWithFacebookUseCase _signInWithFacebookUseCase;
+
+  String? _verificationId;
 
   AuthBloc(
-    this._signInWithEmailAndPasswordUseCase,
-    this._signUpWithEmailAndPasswordUseCase,
     this._signOutUseCase,
     this._getCurrentUserUseCase,
     this._sendRecoveryEmailUseCase,
-    this._signInWithGoogleUseCase,
-    this._signInWithFacebookUseCase,
+    this._signInPhoneNumberUseCase,
+    this._signInCredentialUseCase,
+    this._signInCodeUseCase,
   ) : super(const LoadedAuthState()) {
-    on<SignInEmailPasswordAuthEvent>(_onSignInEmailPassword);
-    on<SignUpEmailPasswordAuthEvent>(_onSignUpEmailPassword);
+    on<SignInPhoneNumberAuthEvent>(_onSignInWithPhoneNumber);
     on<SignOutAuthEvent>(_onSignOut);
     on<SendRecoveryEmailAuthEvent>(_onSendRecoveryEmail);
-    on<SignInWithGoogleAuthEvent>(_onSignInWithGoogle);
-    on<SignInWithFacebookAuthEvent>(_onSignInWithFacebook);
-  }
-
-  _onSignInEmailPassword(SignInEmailPasswordAuthEvent event, Emitter<AuthState> emit) async {
-    emit(const LoadingAuthState());
-    try {
-      await _signInWithEmailAndPasswordUseCase(params: {
-        'email': event.email,
-        'password': event.password,
-      });
-      emit(const LoadedAuthState());
-      Navigator.pushReplacementNamed(
-        event.context,
-        HomeScreen.routeName,
-      );
-    } catch (e) {
-      emit(const LoadedAuthState());
-      ScaffoldMessenger.of(event.context).showSnackBar(SnackBar(content: Text(e.toString())));
-    }
-  }
-
-  _onSignInWithGoogle(SignInWithGoogleAuthEvent event, Emitter<AuthState> emit) async {
-    emit(const LoadingAuthState());
-    try {
-      await _signInWithGoogleUseCase();
-      emit(const LoadedAuthState());
-      Navigator.pushReplacementNamed(
-        event.context,
-        HomeScreen.routeName,
-      );
-    } catch (e) {
-      emit(const LoadedAuthState());
-      print('error');
-      print(e.toString());
-      ScaffoldMessenger.of(event.context).showSnackBar(SnackBar(content: Text(e.toString())));
-    }
-  }
-
-  _onSignInWithFacebook(SignInWithFacebookAuthEvent event, Emitter<AuthState> emit) async {
-    emit(const LoadingAuthState());
-    try {
-      await _signInWithFacebookUseCase();
-      emit(const LoadedAuthState());
-      Navigator.pushReplacementNamed(
-        event.context,
-        HomeScreen.routeName,
-      );
-    } catch (e) {
-      emit(const LoadedAuthState());
-      ScaffoldMessenger.of(event.context).showSnackBar(SnackBar(content: Text(e.toString())));
-    }
-  }
-
-  _onSignUpEmailPassword(SignUpEmailPasswordAuthEvent event, Emitter<AuthState> emit) async {
-    emit(const LoadingAuthState());
-    try {
-      await _signUpWithEmailAndPasswordUseCase(params: {
-        'email': event.email,
-        'password': event.password,
-      });
-      emit(const LoadedAuthState());
-      Navigator.pushReplacementNamed(
-        event.context,
-        HomeScreen.routeName,
-      );
-    } catch (e) {
-      emit(const LoadedAuthState());
-      ScaffoldMessenger.of(event.context).showSnackBar(SnackBar(content: Text(e.toString())));
-    }
+    on<SignInCodeAuthEvent>(_onSignInCode);
+    on<SignInCredentialAuthEvent>(_onSignInCredential);
+    on<ThrowExceptionAuthEvent>(_onThrowException);
+    on<LoadAuthEvent>(_onLoad);
   }
 
   _onSignOut(SignOutAuthEvent event, Emitter<AuthState> emit) async {
@@ -115,7 +50,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const LoadedAuthState());
       Navigator.pushReplacementNamed(
         event.context,
-        LoginScreen.routeName,
+        SignInScreen.routeName,
       );
     } catch (e) {
       emit(const LoadedAuthState());
@@ -139,5 +74,64 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   User? getCurrentUser() {
     return _getCurrentUserUseCase();
+  }
+
+  FutureOr<void> _onSignInWithPhoneNumber(SignInPhoneNumberAuthEvent event, Emitter<AuthState> emit) async {
+    emit(const LoadingAuthState());
+    try {
+      await _signInPhoneNumberUseCase(
+        params: {
+          'phoneNumber': event.phoneNumber,
+          'onCodeSent': (String verificationId) {
+            _verificationId = verificationId;
+            add(const LoadAuthEvent());
+            Navigator.pushNamed(event.context, VerificationScreen.routeName);
+          },
+          'onVerificationCompleted': (AuthCredential credential) async {
+            add(SignInCredentialAuthEvent(credential: credential, context: event.context));
+          },
+          'onVerificationFailed': (Exception e) async {
+            add(ThrowExceptionAuthEvent(exception: e));
+          },
+        },
+      );
+    } on Exception catch (e) {
+      emit(ErrorAuthState(e));
+    }
+  }
+
+  FutureOr<void> _onSignInCode(SignInCodeAuthEvent event, Emitter<AuthState> emit) async {
+    emit(const LoadingAuthState());
+    try {
+      await _signInCodeUseCase(
+        params: {
+          'verificationId': _verificationId,
+          'smsCode': event.smsCode,
+        },
+      );
+      Navigator.pushNamed(event.context, HomeScreen.routeName);
+      emit(const LoadedAuthState());
+    } on Exception catch (e) {
+      emit(ErrorAuthState(e));
+    }
+  }
+
+  FutureOr<void> _onSignInCredential(SignInCredentialAuthEvent event, Emitter<AuthState> emit) async {
+    emit(const LoadingAuthState());
+    try {
+      await _signInCredentialUseCase(params: event.credential);
+      emit(const LoadedAuthState());
+      Navigator.pushNamed(event.context, HomeScreen.routeName);
+    } on Exception catch (e) {
+      emit(ErrorAuthState(e));
+    }
+  }
+
+  FutureOr<void> _onThrowException(ThrowExceptionAuthEvent event, Emitter<AuthState> emit) {
+    emit(ErrorAuthState(event.exception));
+  }
+
+  FutureOr<void> _onLoad(LoadAuthEvent event, Emitter<AuthState> emit) {
+    emit(const LoadedAuthState());
   }
 }

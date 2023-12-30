@@ -3,9 +3,16 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthRepository {
-  Future<void> signInWithEmailAndPassword(String email, String password);
+  Future<void> signInWithPhoneNumber(
+    String phoneNumber,
+    Function onCodeSent,
+    Function onVerificationCompleted,
+    Function onVerificationFailed,
+  );
 
-  Future<void> createUserWithEmailAndPassword(String email, String password);
+  Future<void> signInWithCredentials(AuthCredential credential);
+
+  Future<void> signInWithCode(String verificationId, String smsCode);
 
   Future<void> signOut();
 
@@ -14,10 +21,6 @@ abstract class AuthRepository {
   User? getCurrentUser();
 
   Future<void> sendRecoveryEmail(String email);
-
-  Future<void> signIngWithGoogle();
-
-  Future<void> signIngWithFacebook();
 
   Future<void> changeDisplayName(String displayName);
 

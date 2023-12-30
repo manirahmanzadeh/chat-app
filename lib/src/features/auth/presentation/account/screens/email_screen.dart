@@ -1,9 +1,7 @@
+import 'package:chatapp/src/core/components/app_button.dart';
+import 'package:chatapp/src/features/auth/presentation/account/bloc/profile_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:chatapp/src/core/components/app_button.dart';
-import 'package:chatapp/src/core/components/app_text_form_field.dart';
-import 'package:chatapp/src/core/utils/validators.dart';
-import 'package:chatapp/src/features/auth/presentation/account/bloc/profile_state.dart';
 
 import '../bloc/profile_bloc.dart';
 
@@ -54,11 +52,11 @@ class EmailScreen extends StatelessWidget {
                           const SizedBox(
                             height: 12,
                           ),
-                          AppTextFormField(
-                            hint: staticProfileBloc.getUserEmail(context),
-                            validator: AppValidator.emailValidator,
-                            onSaved: staticProfileBloc.onEmailSaved,
-                          ),
+                          // AppPhoneTextField(
+                          //   hint: staticProfileBloc.getUserEmail(context),
+                          //   validator: AppValidator.emailValidator,
+                          //   onSaved: staticProfileBloc.onEmailSaved,
+                          // ),
                           const SizedBox(
                             height: 24,
                           ),

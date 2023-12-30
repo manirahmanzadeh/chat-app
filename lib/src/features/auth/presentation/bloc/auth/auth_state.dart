@@ -1,5 +1,12 @@
-abstract class AuthState {
-  const AuthState();
+import 'package:equatable/equatable.dart';
+
+abstract class AuthState extends Equatable {
+  final Exception? exception;
+
+  const AuthState({this.exception});
+
+  @override
+  List<Object?> get props => [exception!];
 }
 
 class LoadingAuthState extends AuthState {
@@ -11,5 +18,5 @@ class LoadedAuthState extends AuthState {
 }
 
 class ErrorAuthState extends AuthState {
-  const ErrorAuthState();
+  const ErrorAuthState(Exception exception) : super(exception: exception);
 }

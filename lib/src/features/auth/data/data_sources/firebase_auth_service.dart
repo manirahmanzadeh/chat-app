@@ -10,28 +10,36 @@ class FirebaseAuthService {
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
-  Future<void> signInWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> signInWithPhoneNumber(
+      String phoneNumber, Function onCodeSent, Function onVerificationCompleted, Function onVerificationFailed) async {
+    print('phoneNumber: ');
+    print(phoneNumber);
     await _firebaseAuth
-        .signInWithEmailAndPassword(
-          email: email,
-          password: password,
+        .verifyPhoneNumber(
+          phoneNumber: phoneNumber,
+          timeout: const Duration(seconds: 60),
+          verificationCompleted: (AuthCredential credential) async {
+            onVerificationCompleted(credential);
+          },
+          verificationFailed: (Exception e) {
+            onVerificationFailed(e);
+          },
+          codeSent: (String verificationId, [int? forceResendingToken]) {
+            onCodeSent(verificationId);
+          },
+          codeAutoRetrievalTimeout: (_) {},
         )
         .onError((error, stackTrace) => throw (Exception(error)));
   }
 
-  Future<void> createUserWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
-    await _firebaseAuth
-        .createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        )
-        .onError((error, stackTrace) => throw (Exception(error)));
+  Future<void> signInWithCredential(AuthCredential credential) {
+    return _firebaseAuth.signInWithCredential(credential).onError((error, stackTrace) => throw (Exception(error)));
+  }
+
+  Future<void> signInWithCode(String verificationId, String smsCode) async {
+    AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
+
+    await _firebaseAuth.signInWithCredential(credential);
   }
 
   Future<void> signOut() async {
@@ -42,14 +50,6 @@ class FirebaseAuthService {
     required String email,
   }) async {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
-  }
-
-  Future<void> signInWithCredentials(AuthCredential credential) async {
-    await _firebaseAuth
-        .signInWithCredential(
-          credential,
-        )
-        .onError((error, stackTrace) => throw (Exception(error)));
   }
 
   Future<void> changeDisplayName(String displayName) async {
