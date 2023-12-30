@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chatapp/src/features/auth/data/data_sources/firebase_auth_service.dart';
 import 'package:chatapp/src/features/auth/data/data_sources/firebase_storage_service.dart';
 import 'package:chatapp/src/features/auth/data/data_sources/user_profile_service.dart';
+import 'package:chatapp/src/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:chatapp/src/features/auth/domain/repository/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -96,5 +97,28 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> signInWithCode(String verificationId, String smsCode) {
     return _authService.signInWithCode(verificationId, smsCode);
+  }
+
+  @override
+  Future<void> getOrCreateProfile() {
+    final user = _authService.currentUser;
+    if (user == null) {
+      throw Exception('User is null');
+    }
+    return _userProfileService.getOrCreateUserProfile(user);
+  }
+
+  @override
+  UserProfileEntity? getCurrentUserProfile() {
+    return _userProfileService.currentProfile;
+  }
+
+  @override
+  Future<bool> checkProfileExistenceAndFill() {
+    final user = _authService.currentUser;
+    if (user == null) {
+      throw Exception('User is null');
+    }
+    return _userProfileService.checkProfileExistenceAndFill(user);
   }
 }

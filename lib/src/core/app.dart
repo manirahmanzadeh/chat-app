@@ -37,7 +37,7 @@ class App extends StatelessWidget {
         builder: (_, state) => MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: AppTheme.light,
-          routes: AppRoutes.routes,
+          routes: AppRoutes(locator()).routes(),
           locale: state.locale,
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

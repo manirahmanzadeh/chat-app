@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chatapp/src/features/auth/domain/usecases/edit_user_usecases.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/send_recovery_email_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/signin_code_usecase.dart';
@@ -23,6 +24,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignOutUseCase _signOutUseCase;
   final GetCurrentUserUseCase _getCurrentUserUseCase;
   final SendRecoveryEmailUseCase _sendRecoveryEmailUseCase;
+  final ChangeProfilePhotoUseCase _changeProfilePhotoUseCase;
+  final ChangeDisplayNameUseCase _changeDisplayNameUseCase;
 
   String? _verificationId;
 
@@ -33,6 +36,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._signInPhoneNumberUseCase,
     this._signInCredentialUseCase,
     this._signInCodeUseCase,
+    this._changeProfilePhotoUseCase,
+    this._changeDisplayNameUseCase,
   ) : super(const LoadedAuthState()) {
     on<SignInPhoneNumberAuthEvent>(_onSignInWithPhoneNumber);
     on<SignOutAuthEvent>(_onSignOut);
@@ -41,6 +46,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignInCredentialAuthEvent>(_onSignInCredential);
     on<ThrowExceptionAuthEvent>(_onThrowException);
     on<LoadAuthEvent>(_onLoad);
+    on<ChangeProfilePhotoAuthEvent>(_onChangeProfilePhotoEvent);
+    on<ChangeDisplayNameAuthEvent>(_onChangeDisplayNameEvent);
   }
 
   _onSignOut(SignOutAuthEvent event, Emitter<AuthState> emit) async {
@@ -133,5 +140,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   FutureOr<void> _onLoad(LoadAuthEvent event, Emitter<AuthState> emit) {
     emit(const LoadedAuthState());
+  }
+
+  FutureOr<void> _onChangeProfilePhotoEvent(ChangeProfilePhotoAuthEvent event, Emitter<AuthState> emit) async {
+    emit(const LoadingAuthState());
+    try {
+      await _changeProfilePhotoUseCase(params: event.photo);
+      emit(const LoadedAuthState());
+      ScaffoldMessenger.of(event.context).showSnackBar(const SnackBar(content: Text('Changes Submitted!')));
+    } catch (e) {
+      emit(const LoadedAuthState());
+      ScaffoldMessenger.of(event.context).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  FutureOr<void> _onChangeDisplayNameEvent(ChangeDisplayNameAuthEvent event, Emitter<AuthState> emit) async {
+    emit(const LoadingAuthState());
+    try {
+      await _changeDisplayNameUseCase(params: event.displayName);
+      emit(const LoadedAuthState());
+      Navigator.pushReplacementNamed(event.context, HomeScreen.routeName);
+    } catch (e) {
+      emit(const LoadedAuthState());
+      ScaffoldMessenger.of(event.context).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
   }
 }

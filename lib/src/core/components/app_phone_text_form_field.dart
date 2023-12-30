@@ -1,32 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-class AppTextFormField extends StatelessWidget {
-  const AppTextFormField({
+class AppPhoneTextField extends StatelessWidget {
+  const AppPhoneTextField({
     Key? key,
-    this.title,
-    this.icon,
+    this.hint,
     this.onSaved,
-    this.validator,
   }) : super(key: key);
-  final String? title;
-  final String? icon;
+
+  final String? hint;
   final Function(String?)? onSaved;
-  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: const Color(0xFF9098B1),
-          ),
-      onSaved: onSaved,
-      validator: validator,
-      decoration: InputDecoration(
-        isDense: true,
+    return InternationalPhoneNumberInput(
+      onInputChanged: (PhoneNumber number) {
+        // Handle changes in phone number input
+      },
+      onInputValidated: (bool value) {
+        // Handle validation of the phone number
+      },
+      selectorConfig: const SelectorConfig(
+        selectorType: PhoneInputSelectorType.DIALOG,
+      ),
+      inputDecoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 12,
+        ),
+        labelText: hint,
+        labelStyle: const TextStyle(
+          color: Color(0xFF9098B1),
         ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -58,23 +62,28 @@ class AppTextFormField extends StatelessWidget {
             color: Color(0xFFEBF0FF),
           ),
         ),
-        prefixIcon: icon != null
-            ? Padding(
-                padding: const EdgeInsets.all(16),
-                child: SvgPicture.asset(
-                  icon!,
-                  height: 16,
-                ),
-              )
-            : null,
-        hintText: title,
-        hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: const Color(0xFF9098B1),
-            ),
+        prefixIcon: const Padding(
+          padding: EdgeInsets.all(4),
+          child: Icon(
+            Icons.phone,
+            size: 16,
+          ),
+        ),
+        hintStyle: const TextStyle(
+          color: Color(0xFF9098B1),
+        ),
       ),
-      keyboardType: TextInputType.text,
-      cursorColor: Colors.blue,
+      keyboardType: TextInputType.phone,
+      cursorColor: Colors.black,
       textAlign: TextAlign.left,
+      spaceBetweenSelectorAndTextField: 0,
+      onSaved: (PhoneNumber? number) {
+        // Handle saving the phone number
+        if (onSaved != null && number != null) {
+          onSaved!(number.phoneNumber!.toString());
+        }
+      },
+      autoValidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }

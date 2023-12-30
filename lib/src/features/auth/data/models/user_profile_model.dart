@@ -19,33 +19,33 @@ class UserProfileModel extends UserProfileEntity {
 
   factory UserProfileModel.fromEntity(UserProfileEntity userProfileEntity) => UserProfileModel(
         uid: userProfileEntity.uid,
-        email: userProfileEntity.email,
-        photoURL: userProfileEntity.photoURL,
-        displayName: userProfileEntity.displayName,
-        bio: userProfileEntity.bio,
+        email: userProfileEntity.email ?? '',
+        photoURL: userProfileEntity.photoURL ?? '',
+        displayName: userProfileEntity.displayName ?? '',
+        bio: userProfileEntity.bio ?? '',
       );
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) => UserProfileModel(
         uid: json['uid'],
-        email: json['email'],
-        photoURL: json['photoURL'],
-        displayName: json['displayName'],
-        bio: json['bio'],
+        email: json['email'] ?? '',
+        photoURL: json['photoURL'] ?? '',
+        displayName: json['displayName'] ?? '',
+        bio: json['bio'] ?? '',
       );
 
   factory UserProfileModel.fromDocumentSnapshot(DocumentSnapshot<Object?> snapshot) => UserProfileModel(
         uid: snapshot['uid'],
-        email: snapshot['email'],
-        photoURL: snapshot['photoURL'],
-        displayName: snapshot['displayName'],
-        bio: snapshot['bio'],
+        email: snapshot['email'] ?? '',
+        photoURL: snapshot['photoURL'] ?? '',
+        displayName: snapshot['displayName'] ?? '',
+        bio: snapshot['bio'] ?? '',
       );
 
   factory UserProfileModel.fromUser(User user) => UserProfileModel(
         uid: user.uid,
         email: user.email ?? '',
-        displayName: user.displayName,
-        photoURL: user.photoURL,
+        displayName: user.displayName ?? '',
+        photoURL: user.photoURL ?? '',
       );
 
   Map<String, dynamic> toMap() => {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -63,4 +65,18 @@ class ThrowExceptionAuthEvent extends AuthEvent {
 
 class LoadAuthEvent extends AuthEvent {
   const LoadAuthEvent();
+}
+
+class ChangeProfilePhotoAuthEvent extends AuthEvent {
+  final File photo;
+  final BuildContext context;
+
+  const ChangeProfilePhotoAuthEvent({required this.photo, required this.context});
+}
+
+class ChangeDisplayNameAuthEvent extends AuthEvent {
+  final String displayName;
+  final BuildContext context;
+
+  const ChangeDisplayNameAuthEvent({required this.displayName, required this.context});
 }

@@ -1,21 +1,33 @@
 import 'package:chatapp/src/core/components/app_button.dart';
 import 'package:chatapp/src/core/components/app_text_form_field.dart';
 import 'package:chatapp/src/core/utils/validators.dart';
-import 'package:chatapp/src/features/auth/presentation/account/bloc/profile_state.dart';
+import 'package:chatapp/src/features/auth/presentation/bloc/auth/auth_bloc.dart';
+import 'package:chatapp/src/features/auth/presentation/bloc/auth/auth_state.dart';
+import 'package:chatapp/src/features/auth/presentation/register/bloc/register_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/profile_bloc.dart';
+class SetNameAndPhotoScreen extends StatelessWidget {
+  const SetNameAndPhotoScreen({Key? key}) : super(key: key);
 
-class ChangeNameScreen extends StatelessWidget {
-  const ChangeNameScreen({Key? key}) : super(key: key);
-
-  static const routeName = '/change-name';
+  static const routeName = '/set-name-and-photo';
 
   @override
   Widget build(BuildContext context) {
-    final profileBloc = BlocProvider.of<ProfileBloc>(context, listen: true);
-    final staticProfileBloc = BlocProvider.of<ProfileBloc>(context, listen: false);
+    return BlocProvider(
+      create: (context) => RegisterBloc(context),
+      child: const _SetNameAndPhotoScreen(),
+    );
+  }
+}
+
+class _SetNameAndPhotoScreen extends StatelessWidget {
+  const _SetNameAndPhotoScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    final registerBloc = BlocProvider.of<RegisterBloc>(context, listen: true);
+    final staticRegisterBloc = BlocProvider.of<RegisterBloc>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -27,9 +39,9 @@ class ChangeNameScreen extends StatelessWidget {
           'Name',
         ),
       ),
-      body: BlocBuilder<ProfileBloc, ProfileState>(
+      body: BlocBuilder<AuthBloc, AuthState>(
         builder: (_, state) {
-          if (state is LoadingProfileState) {
+          if (state is LoadingAuthState) {
             return const Center(
               child: CircularProgressIndicator(),
             );
@@ -37,7 +49,7 @@ class ChangeNameScreen extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Form(
-                key: staticProfileBloc.formKey,
+                key: staticRegisterBloc.registerFormKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -48,14 +60,14 @@ class ChangeNameScreen extends StatelessWidget {
                             height: 16,
                           ),
                           InkWell(
-                            onTap: () => staticProfileBloc.showImagePicker(context),
+                            onTap: () => staticRegisterBloc.showImagePicker(context),
                             child: CircleAvatar(
                               radius: 50.0,
                               backgroundColor: Colors.grey[300],
-                              child: profileBloc.getUserPhotoUrl(context) != null
+                              child: registerBloc.getUserPhotoUrl(context) != null
                                   ? ClipOval(
                                       child: Image.network(
-                                        profileBloc.getUserPhotoUrl(context)!,
+                                        registerBloc.getUserPhotoUrl(context)!,
                                         width: 100.0,
                                         height: 100.0,
                                         fit: BoxFit.cover,
@@ -79,9 +91,9 @@ class ChangeNameScreen extends StatelessWidget {
                             height: 12,
                           ),
                           AppTextFormField(
-                            title: staticProfileBloc.getUserDisplayName(context),
+                            title: staticRegisterBloc.getUserDisplayName(context),
                             validator: AppValidator.emptyValidator,
-                            onSaved: staticProfileBloc.onNameSaved,
+                            onSaved: staticRegisterBloc.onNameSaved,
                           ),
                           const SizedBox(
                             height: 24,
@@ -90,7 +102,7 @@ class ChangeNameScreen extends StatelessWidget {
                       ),
                     ),
                     AppButton(
-                      onTap: () => staticProfileBloc.submitChangeDisplayNameForm(context),
+                      onTap: () => staticRegisterBloc.submitChangeDisplayNameForm(context),
                       labelText: 'Save',
                     ),
                     const SizedBox(

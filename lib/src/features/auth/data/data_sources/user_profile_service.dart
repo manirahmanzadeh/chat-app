@@ -10,6 +10,17 @@ class UserProfileService {
 
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
+  Future<bool> checkProfileExistenceAndFill(User user) async {
+    DocumentSnapshot userSnapshot =
+        await _firebaseFirestore.collection('users').doc(user.uid).get().onError((error, stackTrace) => throw (Exception(error)));
+
+    if (userSnapshot.exists) {
+      _userProfile = UserProfileModel.fromDocumentSnapshot(userSnapshot);
+      return true;
+    }
+    return false;
+  }
+
   Future<void> getOrCreateUserProfile(User user) async {
     DocumentSnapshot userSnapshot =
         await _firebaseFirestore.collection('users').doc(user.uid).get().onError((error, stackTrace) => throw (Exception(error)));

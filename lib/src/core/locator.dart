@@ -80,7 +80,16 @@ Future<void> initializeDependencies() async {
   ///
   /// ** Global:
   locator.registerFactory<LocaleBloc>(() => LocaleBloc());
-  locator.registerFactory<AuthBloc>(() => AuthBloc(locator(), locator(), locator(), locator(), locator(), locator()));
+  locator.registerFactory<AuthBloc>(() => AuthBloc(
+        locator(),
+        locator(),
+        locator(),
+        locator(),
+        locator(),
+        locator(),
+        locator(),
+        locator(),
+      ));
   locator.registerFactory<ProfileBloc>(() => ProfileBloc(locator(), locator(), locator(), locator(), locator()));
 
   ///

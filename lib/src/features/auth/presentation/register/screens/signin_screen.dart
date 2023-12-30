@@ -1,4 +1,4 @@
-import 'package:chatapp/src/core/components/app_text_form_field.dart';
+import 'package:chatapp/src/core/components/app_phone_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
