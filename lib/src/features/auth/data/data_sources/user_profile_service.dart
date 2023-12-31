@@ -30,7 +30,7 @@ class UserProfileService {
     } else {
       await _firebaseFirestore.collection('users').doc(user.uid).set({
         'uid': user.uid,
-        'email': user.email,
+        'phoneNumber': user.phoneNumber,
         'displayName': user.displayName,
         'photoURL': user.photoURL,
         'bio': null,
@@ -57,7 +57,7 @@ class UserProfileService {
     if (_userProfile != null) {
       final userData = {
         'uid': user.uid,
-        'email': user.email,
+        'phoneNumber': user.phoneNumber,
         'displayName': user.displayName,
         'photoURL': user.photoURL,
         'bio': bio,

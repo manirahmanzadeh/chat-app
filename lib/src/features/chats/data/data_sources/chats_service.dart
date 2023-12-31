@@ -2,7 +2,9 @@ import 'package:chatapp/src/features/auth/data/models/user_profile_model.dart';
 import 'package:chatapp/src/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:chatapp/src/features/chats/data/models/chat_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ChatsService {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
@@ -25,8 +27,41 @@ class ChatsService {
         .where('uid', isNotEqualTo: user.uid)
         .get()
         .onError((error, stackTrace) => throw (Exception(error)));
-    List<UserProfileModel> data = query.docs.map((e) => UserProfileModel.fromDocumentSnapshot(e)).toList();
+
+    List<String> deviceContactNumbers = await _getDeviceContactNumbers();
+    List<UserProfileModel> data = query.docs
+        .map((e) => UserProfileModel.fromDocumentSnapshot(e))
+        .where((profile) => deviceContactNumbers.contains(_normalizePhoneNumber(profile.phoneNumber)))
+        .toList();
     return data;
+  }
+
+  String _normalizePhoneNumber(String phoneNumber) {
+    // Remove non-numeric characters
+    String numericOnly = phoneNumber.replaceAll(RegExp(r'\D'), '');
+    numericOnly.replaceAll(' ', '');
+    // Take the last 10 characters
+    int endIndex = numericOnly.length;
+    int startIndex = (endIndex > 10) ? endIndex - 10 : 0;
+    String numberWithOutCode = numericOnly.substring(startIndex, endIndex);
+    String firstDigits = startIndex > 0 ? numericOnly.substring(0, startIndex) : '';
+    String countryDigits = firstDigits.contains('0') ? '+98' : '+$firstDigits';
+    return countryDigits + numberWithOutCode;
+  }
+
+  Future<List<String>> _getDeviceContactNumbers() async {
+    var status = await Permission.contacts.status;
+    if (!status.isGranted) {
+      await Permission.contacts.request();
+      return _getDeviceContactNumbers();
+    }
+    Iterable<Contact> contacts = await ContactsService.getContacts();
+    List<String> phoneNumbers = contacts
+        .where((contact) => contact.phones!.isNotEmpty)
+        .map((contact) => _normalizePhoneNumber(contact.phones!.first.value ?? ""))
+        .toList();
+    print(phoneNumbers);
+    return phoneNumbers;
   }
 
   Future<ChatModel> createChat(UserProfileEntity currentUser, UserProfileEntity otherUser) async {
