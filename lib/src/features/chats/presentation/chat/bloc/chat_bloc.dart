@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chatapp/src/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:chatapp/src/features/auth/domain/repository/auth_repository.dart';
 import 'package:chatapp/src/features/chats/domain/entities/chat_entity.dart';
 import 'package:chatapp/src/features/chats/domain/usecases/get_messages_usecase.dart';
@@ -15,6 +16,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final SendMessageUseCase _sendMessageUseCase;
 
   late ChatEntity _chat;
+  late UserProfileEntity _userProfile;
 
   User get currentUser => _authRepository.getCurrentUser()!;
 
@@ -34,7 +36,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       final messagesStream = _getMessagesUseCase(params: event.chat.chatId);
       _chat = event.chat;
-      emit(LoadedChatState(event.chat, messagesStream));
+      _userProfile = event.userProfile;
+      emit(LoadedChatState(_chat, messagesStream, _userProfile));
     } on Exception catch (e) {
       emit(
         ErrorChatState(e),

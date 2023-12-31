@@ -15,6 +15,8 @@ abstract class AuthRepository {
 
   Future<void> getOrCreateProfile();
 
+  Future<UserProfileEntity> getUserProfile(String uid);
+
   Future<bool> checkProfileExistenceAndFill();
 
   Future<void> signInWithCode(String verificationId, String smsCode);

@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/src/core/locator.dart';
-import 'package:chatapp/src/features/chats/domain/entities/chat_entity.dart';
 import 'package:chatapp/src/features/chats/domain/entities/message_entity.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_bloc.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_event.dart';
@@ -17,9 +16,11 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chat = ModalRoute.of(context)!.settings.arguments as ChatEntity;
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final chat = arguments['chat'];
+    final userProfile = arguments['userProfile'];
     return BlocProvider<ChatBloc>(
-      create: (_) => locator()..add(LoadChatEvent(chat)),
+      create: (_) => locator()..add(LoadChatEvent(chat, userProfile)),
       child: const _ChatScreen(),
     );
   }
@@ -50,14 +51,6 @@ class _ChatScreen extends StatelessWidget {
             ),
           );
         }
-
-        final currentUser = staticBlocProvider.currentUser;
-        final chat = state.chat!;
-        final otherParticipantUid = chat.participants.firstWhere(
-          (uid) => uid != currentUser.uid,
-          orElse: () => '',
-        );
-        final otherUserIndex = chat.participants.indexOf(otherParticipantUid);
         return Scaffold(
           backgroundColor: Colors.white.withOpacity(0.9),
           appBar: AppBar(
@@ -66,13 +59,13 @@ class _ChatScreen extends StatelessWidget {
                 SizedBox(
                   height: 32,
                   child: ClipOval(
-                    child: CachedNetworkImage(imageUrl: chat.imageUrls[otherUserIndex]),
+                    child: CachedNetworkImage(imageUrl: state.userProfile!.photoURL ?? ''),
                   ),
                 ),
                 const SizedBox(
                   width: 4,
                 ),
-                Text(chat.displayNames[otherUserIndex])
+                Text(state.userProfile!.displayName ?? '')
               ],
             ),
           ),
@@ -102,8 +95,8 @@ class _ChatScreen extends StatelessWidget {
                           MessageEntity message = snapshot.data![index];
                           return MessageBubble(
                             message: message,
-                            myMessage: message.senderUid == currentUser.uid,
-                            displayName: chat.displayNames[otherUserIndex],
+                            myMessage: message.senderUid != state.userProfile!.uid,
+                            displayName: state.userProfile!.displayName ?? '',
                           );
                         },
                       );

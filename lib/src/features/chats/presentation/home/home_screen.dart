@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/src/core/components/drawer.dart';
 import 'package:chatapp/src/core/locator.dart';
 import 'package:chatapp/src/features/chats/domain/entities/chat_entity.dart';
@@ -6,6 +5,7 @@ import 'package:chatapp/src/features/chats/presentation/contacts/contacts_screen
 import 'package:chatapp/src/features/chats/presentation/home/bloc/home_bloc.dart';
 import 'package:chatapp/src/features/chats/presentation/home/bloc/home_event.dart';
 import 'package:chatapp/src/features/chats/presentation/home/bloc/home_state.dart';
+import 'package:chatapp/src/features/chats/presentation/home/components/chat_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,7 +30,6 @@ class _HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final staticBlocProvider = BlocProvider.of<HomeBloc>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chat App'),
@@ -68,20 +67,7 @@ class _HomeScreen extends StatelessWidget {
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     ChatEntity chat = snapshot.data![index];
-                    final currentUser = BlocProvider.of<HomeBloc>(context).currentUser;
-                    final otherParticipantUid = chat.participants.firstWhere(
-                      (uid) => uid != currentUser.uid,
-                      orElse: () => '',
-                    );
-                    final otherUserIndex = chat.participants.indexOf(otherParticipantUid);
-                    return ListTile(
-                      onTap: () => staticBlocProvider.goToChat(chat),
-                      leading: CircleAvatar(
-                        child: CachedNetworkImage(imageUrl: chat.imageUrls[otherUserIndex]),
-                      ),
-                      title: Text(chat.displayNames[otherUserIndex]),
-                      // Add more widgets to display other chat information
-                    );
+                    return ChatComponent(chat: chat);
                   },
                 );
               }

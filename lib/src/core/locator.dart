@@ -6,6 +6,7 @@ import 'package:chatapp/src/features/auth/data/repository/auth_repository_impl.d
 import 'package:chatapp/src/features/auth/domain/repository/auth_repository.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/edit_user_usecases.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/get_current_user_usecase.dart';
+import 'package:chatapp/src/features/auth/domain/usecases/get_user_profile_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/send_recovery_email_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/signin_code_usecase.dart';
 import 'package:chatapp/src/features/auth/domain/usecases/signin_credential_usecase.dart';
@@ -75,6 +76,7 @@ Future<void> initializeDependencies() async {
   locator.registerSingleton<SignInPhoneNumberUseCase>(SignInPhoneNumberUseCase(locator()));
   locator.registerSingleton<SignInCredentialUseCase>(SignInCredentialUseCase(locator()));
   locator.registerSingleton<SignInCodeUseCase>(SignInCodeUseCase(locator()));
+  locator.registerSingleton<GetUserProfileUseCase>(GetUserProfileUseCase(locator()));
 
   /// * Blocs:
   ///

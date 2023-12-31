@@ -121,4 +121,9 @@ class AuthRepositoryImpl implements AuthRepository {
     }
     return _userProfileService.checkProfileExistenceAndFill(user);
   }
+
+  @override
+  Future<UserProfileEntity> getUserProfile(String uid) {
+    return _userProfileService.getUserProfile(uid);
+  }
 }

@@ -14,8 +14,6 @@ class ChatsService {
         return ChatModel(
           chatId: doc.id,
           participants: List<String>.from(data['participants'] ?? []),
-          displayNames: List<String>.from(data['displayNames'] ?? []),
-          imageUrls: List<String>.from(data['imageUrls'] ?? []),
         );
       }).toList();
     });
@@ -49,8 +47,6 @@ class ChatsService {
     // Chat doesn't exist, create a new one
     DocumentReference docRef = await _firebaseFirestore.collection('chats').add({
       'participants': [currentUser.uid, otherUser.uid],
-      'displayNames': [currentUser.displayName, otherUser.displayName],
-      'imageUrls': [currentUser.photoURL, otherUser.photoURL]
     }).onError((error, stackTrace) => throw (Exception(error)));
     final doc = await docRef.get().onError((error, stackTrace) => throw (Exception(error)));
     return ChatModel.fromDocumentSnapshot(doc);

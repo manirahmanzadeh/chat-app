@@ -39,6 +39,16 @@ class UserProfileService {
     }
   }
 
+  Future<UserProfileEntity> getUserProfile(String uid) async {
+    DocumentSnapshot userSnapshot =
+        await _firebaseFirestore.collection('users').doc(uid).get().onError((error, stackTrace) => throw (Exception(error)));
+    if (userSnapshot.exists) {
+      return UserProfileModel.fromDocumentSnapshot(userSnapshot);
+    } else {
+      throw (Exception('User Profile Does not exists with uid: $uid'));
+    }
+  }
+
   void signOut() {
     _userProfile = null;
   }

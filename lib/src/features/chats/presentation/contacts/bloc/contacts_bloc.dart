@@ -44,7 +44,14 @@ class ContactsBloc extends Bloc<ContactEvent, ContactsState> {
     );
     try {
       final chat = await _createChatUseCase(params: event.targetUser);
-      Navigator.pushNamed(_context, ChatScreen.routeName, arguments: chat);
+      Navigator.pushNamed(
+        _context,
+        ChatScreen.routeName,
+        arguments: {
+          'chat': chat,
+          'userProfile': event.targetUser,
+        },
+      );
       emit(LoadedContactsState(event.loadedProfiles));
     } on Exception catch (e) {
       emit(
