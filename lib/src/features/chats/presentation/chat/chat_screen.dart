@@ -20,7 +20,9 @@ class ChatScreen extends StatelessWidget {
     final chat = arguments['chat'];
     final userProfile = arguments['userProfile'];
     return BlocProvider<ChatBloc>(
-      create: (_) => locator()..add(LoadChatEvent(chat, userProfile)),
+      create: (context) => locator()
+        ..setContext(context)
+        ..add(LoadChatEvent(chat, userProfile)),
       child: const _ChatScreen(),
     );
   }
@@ -54,19 +56,22 @@ class _ChatScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: Colors.white.withOpacity(0.9),
           appBar: AppBar(
-            title: Row(
-              children: [
-                SizedBox(
-                  height: 32,
-                  child: ClipOval(
-                    child: CachedNetworkImage(imageUrl: state.userProfile!.photoURL ?? ''),
+            title: InkWell(
+              onTap: staticBlocProvider.goToContact,
+              child: Row(
+                children: [
+                  SizedBox(
+                    height: 32,
+                    child: ClipOval(
+                      child: CachedNetworkImage(imageUrl: state.userProfile!.photoURL ?? ''),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Text(state.userProfile!.displayName ?? '')
-              ],
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  Text(state.userProfile!.displayName ?? '')
+                ],
+              ),
             ),
           ),
           body: Column(

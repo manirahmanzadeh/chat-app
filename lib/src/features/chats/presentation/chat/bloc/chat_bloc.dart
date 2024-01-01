@@ -10,6 +10,7 @@ import 'package:chatapp/src/features/chats/domain/usecases/get_messages_usecase.
 import 'package:chatapp/src/features/chats/domain/usecases/send_message_usecase.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_event.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_state.dart';
+import 'package:chatapp/src/features/chats/presentation/contact/contact_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final DeleteMessageUseCase _deleteMessageUseCase;
   final EditMessageUseCase _editMessageUseCase;
 
+  late BuildContext _context;
   late ChatEntity _chat;
   late Stream<List<MessageEntity>> _messageStream;
   late UserProfileEntity _userProfile;
@@ -43,6 +45,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<OpenEditingChatEvent>(onOpenEditing);
     on<CloseTargetMessageChatEvent>(onCloseTargetMessage);
     on<EditMessageChatEvent>(onEditMessage);
+  }
+
+  setContext(BuildContext context) {
+    _context = context;
   }
 
   deleteMessage(String messageId) {
@@ -137,12 +143,18 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           'messageId': _targetMessage!.messageId,
           'newText': newText,
         });
-        closeTargetMessage();
+        emit(LoadedChatState(_chat, _messageStream, _userProfile));
+        _targetMessage = null;
+        messageController.clear();
       }
     } on Exception catch (e) {
       emit(
         ErrorChatState(e),
       );
     }
+  }
+
+  void goToContact() {
+    Navigator.pushNamed(_context, ContactScreen.routeName, arguments: _userProfile);
   }
 }
