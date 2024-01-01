@@ -8,12 +8,14 @@ abstract class ChatState extends Equatable {
   final UserProfileEntity? userProfile;
   final Stream<List<MessageEntity>>? messagesStream;
   final Exception? exception;
+  final MessageEntity? editingMessage;
 
   const ChatState({
     this.chat,
     this.messagesStream,
     this.exception,
     this.userProfile,
+    this.editingMessage,
   });
 
   @override
@@ -22,6 +24,7 @@ abstract class ChatState extends Equatable {
         exception!,
         userProfile!,
         messagesStream!,
+        editingMessage!,
       ];
 }
 
@@ -43,4 +46,10 @@ class LoadedChatState extends ChatState {
 
 class ErrorChatState extends ChatState {
   const ErrorChatState(Exception exception) : super(exception: exception);
+}
+
+class EditingChatState extends ChatState {
+  const EditingChatState(
+      ChatEntity chat, Stream<List<MessageEntity>> messagesStream, UserProfileEntity userProfileEntity, MessageEntity editingMessage)
+      : super(chat: chat, messagesStream: messagesStream, userProfile: userProfileEntity, editingMessage: editingMessage);
 }

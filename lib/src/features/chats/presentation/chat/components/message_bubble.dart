@@ -11,12 +11,14 @@ class MessageBubble extends StatelessWidget {
     required this.myMessage,
     this.displayName,
     required this.deleteMessage,
+    required this.openEditMessage,
   });
 
   final MessageEntity message;
   final bool myMessage;
   final String? displayName;
   final Function(String) deleteMessage;
+  final Function(MessageEntity) openEditMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +53,7 @@ class MessageBubble extends StatelessWidget {
                         leading: const Icon(Icons.edit),
                         title: const Text('Edit'),
                         onTap: () {
+                          openEditMessage(message);
                           Navigator.pop(context);
                         },
                       ),

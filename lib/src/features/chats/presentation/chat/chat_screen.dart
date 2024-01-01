@@ -98,6 +98,7 @@ class _ChatScreen extends StatelessWidget {
                             myMessage: message.senderUid != state.userProfile!.uid,
                             displayName: state.userProfile!.displayName ?? '',
                             deleteMessage: staticBlocProvider.deleteMessage,
+                            openEditMessage: staticBlocProvider.openEditMessage,
                           );
                         },
                       );
@@ -105,7 +106,13 @@ class _ChatScreen extends StatelessWidget {
                   },
                 ),
               ),
-              ChatInput(onSendMessage: (text) => staticBlocProvider.add(SendMessageChatEvent(text))),
+              ChatInput(
+                onSendMessage: () => staticBlocProvider.add(const SendMessageChatEvent()),
+                messageController: staticBlocProvider.messageController,
+                editingMessage: state is EditingChatState ? state.editingMessage : null,
+                closeTargetMessage: state is EditingChatState ? staticBlocProvider.closeTargetMessage : null,
+                submitEditMessage: state is EditingChatState ? staticBlocProvider.submitEditMessage : null,
+              ),
             ],
           ),
         );
