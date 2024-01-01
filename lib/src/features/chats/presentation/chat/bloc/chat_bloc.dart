@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chatapp/src/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:chatapp/src/features/auth/domain/repository/auth_repository.dart';
 import 'package:chatapp/src/features/chats/domain/entities/chat_entity.dart';
+import 'package:chatapp/src/features/chats/domain/usecases/delete_message_usecase.dart';
 import 'package:chatapp/src/features/chats/domain/usecases/get_messages_usecase.dart';
 import 'package:chatapp/src/features/chats/domain/usecases/send_message_usecase.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_event.dart';
@@ -14,6 +15,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final AuthRepository _authRepository;
   final GetMessagesUseCase _getMessagesUseCase;
   final SendMessageUseCase _sendMessageUseCase;
+  final DeleteMessageUseCase _deleteMessageUseCase;
 
   late ChatEntity _chat;
   late UserProfileEntity _userProfile;
@@ -24,9 +26,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     this._authRepository,
     this._getMessagesUseCase,
     this._sendMessageUseCase,
+    this._deleteMessageUseCase,
   ) : super(const LoadingChatState()) {
     on<LoadChatEvent>(onLoadChat);
     on<SendMessageChatEvent>(onSendMessage);
+    on<DeleteMessageChatEvent>(onDeleteMessage);
   }
 
   FutureOr<void> onLoadChat(LoadChatEvent event, Emitter<ChatState> emit) {
@@ -57,5 +61,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ErrorChatState(e),
       );
     }
+  }
+
+  FutureOr<void> onDeleteMessage(DeleteMessageChatEvent event, Emitter<ChatState> emit) async {
+    try {
+      await _deleteMessageUseCase(params: {
+        'chatId': _chat.chatId,
+        'messageId': event.messageId,
+      });
+    } on Exception catch (e) {
+      emit(
+        ErrorChatState(e),
+      );
+    }
+  }
+
+  deleteMessage(String messageId) {
+    add(DeleteMessageChatEvent(messageId));
   }
 }

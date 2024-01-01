@@ -17,3 +17,9 @@ class SendMessageChatEvent implements ChatEvent {
 
   const SendMessageChatEvent(this.text);
 }
+
+class DeleteMessageChatEvent implements ChatEvent {
+  final String messageId;
+
+  const DeleteMessageChatEvent(this.messageId);
+}

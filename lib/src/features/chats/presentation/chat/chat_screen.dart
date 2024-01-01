@@ -97,6 +97,7 @@ class _ChatScreen extends StatelessWidget {
                             message: message,
                             myMessage: message.senderUid != state.userProfile!.uid,
                             displayName: state.userProfile!.displayName ?? '',
+                            deleteMessage: staticBlocProvider.deleteMessage,
                           );
                         },
                       );

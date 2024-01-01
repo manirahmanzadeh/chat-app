@@ -100,5 +100,5 @@ Future<void> initializeDependencies() async {
   /// *** Chats:
   locator.registerFactory<HomeBloc>(() => HomeBloc(locator(), locator()));
   locator.registerFactory<ContactsBloc>(() => ContactsBloc(locator(), locator()));
-  locator.registerFactory<ChatBloc>(() => ChatBloc(locator(), locator(), locator()));
+  locator.registerFactory<ChatBloc>(() => ChatBloc(locator(), locator(), locator(), locator()));
 }
