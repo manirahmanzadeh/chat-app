@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:chatapp/src/features/chats/data/models/message_model.dart';
@@ -35,10 +36,7 @@ class ChatService {
   ) async {
     String? fileUrl;
 
-    print('my file');
-    print(file);
     if (file != null) {
-      print('there is file');
       fileUrl = await _uploadFile(chatId, file, onUploadProgress);
     }
 
@@ -70,7 +68,7 @@ class ChatService {
         throw (e);
       },
       onDone: () {
-        print('Upload complete');
+        log('Upload complete');
       },
       cancelOnError: true,
     );
@@ -79,7 +77,6 @@ class ChatService {
 
     String downloadUrl = await ref.getDownloadURL().onError((error, stackTrace) => throw (Exception(error)));
 
-    print(downloadUrl);
     return downloadUrl;
   }
 

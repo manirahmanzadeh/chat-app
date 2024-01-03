@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SM extends Cubit<SMState> {
@@ -14,13 +15,19 @@ class SM extends Cubit<SMState> {
     this.file,
     this.progress,
     this.fileType,
-  }) : super(const SMState());
+  }) : super(const SMState(0));
 
   onUploadProgress(double newProgress) {
     progress = newProgress;
+    emit(SMState(progress));
   }
 }
 
-class SMState {
-  const SMState();
+class SMState extends Equatable {
+  final double? progress;
+
+  const SMState(this.progress);
+
+  @override
+  List<Object?> get props => [progress!];
 }

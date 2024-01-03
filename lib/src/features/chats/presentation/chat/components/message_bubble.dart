@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/src/core/utils/date_formatter.dart';
 import 'package:chatapp/src/features/chats/domain/entities/message_entity.dart';
 import 'package:flutter/material.dart';
@@ -85,8 +86,8 @@ class MessageBubble extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (message.fileUrl != null && message.fileUrl!.isNotEmpty)
-                    Image.network(
-                      message.fileUrl!,
+                    CachedNetworkImage(
+                      imageUrl: message.fileUrl!,
                       width: MediaQuery.sizeOf(context).width / 2,
                     ),
                   const SizedBox(

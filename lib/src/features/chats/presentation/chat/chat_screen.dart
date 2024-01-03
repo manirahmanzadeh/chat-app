@@ -93,6 +93,7 @@ class _ChatScreen extends StatelessWidget {
                       );
                     } else {
                       return ListView.builder(
+                        padding: const EdgeInsets.only(top: 16),
                         itemCount: snapshot.data!.length,
                         reverse: true,
                         itemBuilder: (context, index) {
