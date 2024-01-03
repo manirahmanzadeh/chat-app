@@ -1,9 +1,19 @@
+import 'dart:io';
+
 import 'package:chatapp/src/features/chats/domain/entities/message_entity.dart';
 
 abstract class ChatRepository {
   Stream<List<MessageEntity>> getChatMessages(String chatId);
 
-  Future<MessageEntity> createMessage(String chatId, String senderUid, String text);
+  Future<void> createMessage(
+    String chatId,
+    String senderUid,
+    Function() onDone,
+    String text,
+    File? file,
+    String? fileType,
+    Function(double)? onUploadProgress,
+  );
 
   Future<void> deleteMessage(String chatId, String messageId);
 

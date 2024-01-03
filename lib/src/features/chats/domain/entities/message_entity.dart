@@ -7,6 +7,8 @@ class MessageEntity extends Equatable {
   final String text;
   final Timestamp timestamp;
   final bool edited;
+  final String? fileUrl;
+  final String? fileType;
 
   const MessageEntity({
     required this.messageId,
@@ -14,8 +16,10 @@ class MessageEntity extends Equatable {
     required this.text,
     required this.timestamp,
     this.edited = false,
+    this.fileUrl,
+    this.fileType,
   });
 
   @override
-  List<Object?> get props => [messageId, senderUid, text, timestamp];
+  List<Object?> get props => [messageId, senderUid, text, timestamp, fileUrl, fileType];
 }

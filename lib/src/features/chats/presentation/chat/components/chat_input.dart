@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chatapp/src/features/chats/domain/entities/message_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +11,9 @@ class ChatInput extends StatelessWidget {
     this.editingMessage,
     required this.closeTargetMessage,
     required this.submitEditMessage,
+    required this.attachFile,
+    this.file,
+    this.closeFileUpload,
   }) : super(key: key);
 
   final Function() onSendMessage;
@@ -16,11 +21,65 @@ class ChatInput extends StatelessWidget {
   final MessageEntity? editingMessage;
   final Function()? submitEditMessage;
   final Function()? closeTargetMessage;
+  final Function()? closeFileUpload;
+  final Function() attachFile;
+  final File? file;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        if (file != null)
+          Container(
+            color: Colors.white70,
+            width: double.infinity,
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.attach_file,
+                  color: Colors.blueGrey,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'File',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.blueGrey,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Image.file(
+                        file!,
+                        height: 50,
+                        width: 50,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                InkWell(
+                  onTap: closeFileUpload,
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.blueGrey,
+                  ),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+              ],
+            ),
+          ),
         if (editingMessage != null)
           Container(
             color: Colors.white70,
@@ -106,6 +165,10 @@ class ChatInput extends StatelessWidget {
                   },
                   onSubmitted: (_) => onSendMessage,
                 ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.attach_file),
+                onPressed: attachFile,
               ),
               if (editingMessage != null)
                 IconButton(

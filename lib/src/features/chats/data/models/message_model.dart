@@ -8,12 +8,16 @@ class MessageModel extends MessageEntity {
     required String text,
     required Timestamp timestamp,
     bool edited = false,
+    String? fileUrl,
+    String? fileType,
   }) : super(
           senderUid: senderUid,
           text: text,
           timestamp: timestamp,
           messageId: messageId,
           edited: edited,
+          fileUrl: fileUrl,
+          fileType: fileType,
         );
 
   factory MessageModel.fromMap(Map<String, dynamic> data, String id) {
@@ -23,6 +27,8 @@ class MessageModel extends MessageEntity {
       text: data['text'],
       timestamp: data['timestamp'] ?? Timestamp.now(),
       edited: data['edited'] ?? false,
+      fileUrl: data['fileUrl'],
+      fileType: data['fileType'], // Add this line to retrieve file type
     );
   }
 }

@@ -84,6 +84,14 @@ class MessageBubble extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (message.fileUrl != null && message.fileUrl!.isNotEmpty)
+                    Image.network(
+                      message.fileUrl!,
+                      width: MediaQuery.sizeOf(context).width / 2,
+                    ),
+                  const SizedBox(
+                    height: 4,
+                  ),
                   Text(
                     message.text,
                     style: TextStyle(

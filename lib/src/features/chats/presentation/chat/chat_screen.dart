@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/src/core/locator.dart';
 import 'package:chatapp/src/features/chats/domain/entities/message_entity.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_bloc.dart';
-import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_event.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/bloc/chat_state.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/components/chat_input.dart';
 import 'package:chatapp/src/features/chats/presentation/chat/components/message_bubble.dart';
+import 'package:chatapp/src/features/chats/presentation/chat/components/sending_message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,9 +20,7 @@ class ChatScreen extends StatelessWidget {
     final chat = arguments['chat'];
     final userProfile = arguments['userProfile'];
     return BlocProvider<ChatBloc>(
-      create: (context) => locator()
-        ..setContext(context)
-        ..add(LoadChatEvent(chat, userProfile)),
+      create: (context) => locator()..initChat(context, chat, userProfile),
       child: const _ChatScreen(),
     );
   }
@@ -34,6 +32,7 @@ class _ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final staticBlocProvider = BlocProvider.of<ChatBloc>(context, listen: false);
+    // final blocProvider = BlocProvider.of<ChatBloc>(context, listen: true);
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (_, state) {
         if (state is LoadingChatState) {
@@ -98,6 +97,26 @@ class _ChatScreen extends StatelessWidget {
                         reverse: true,
                         itemBuilder: (context, index) {
                           MessageEntity message = snapshot.data![index];
+                          if (index == 0) {
+                            return Column(
+                              children: [
+                                MessageBubble(
+                                  message: message,
+                                  myMessage: message.senderUid != state.userProfile!.uid,
+                                  displayName: state.userProfile!.displayName ?? '',
+                                  deleteMessage: staticBlocProvider.deleteMessage,
+                                  openEditMessage: staticBlocProvider.openEditMessage,
+                                ),
+                                Column(
+                                  children: state.sending!
+                                      .map(
+                                        (e) => SMBubble(sm: e),
+                                      )
+                                      .toList(),
+                                ),
+                              ],
+                            );
+                          }
                           return MessageBubble(
                             message: message,
                             myMessage: message.senderUid != state.userProfile!.uid,
@@ -112,11 +131,14 @@ class _ChatScreen extends StatelessWidget {
                 ),
               ),
               ChatInput(
-                onSendMessage: () => staticBlocProvider.add(const SendMessageChatEvent()),
+                onSendMessage: staticBlocProvider.sendMessage,
                 messageController: staticBlocProvider.messageController,
-                editingMessage: state is EditingChatState ? state.editingMessage : null,
-                closeTargetMessage: state is EditingChatState ? staticBlocProvider.closeTargetMessage : null,
-                submitEditMessage: state is EditingChatState ? staticBlocProvider.submitEditMessage : null,
+                editingMessage: state.editingMessage,
+                closeTargetMessage: staticBlocProvider.closeTargetMessage,
+                submitEditMessage: staticBlocProvider.submitEditMessage,
+                closeFileUpload: staticBlocProvider.closeFileUpload,
+                attachFile: staticBlocProvider.setFile,
+                file: state.file,
               ),
             ],
           ),
