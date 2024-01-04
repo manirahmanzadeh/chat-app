@@ -81,8 +81,9 @@ class MessageBubble extends StatelessWidget {
             ),
             alignment: myMessage ? Alignment.centerRight : Alignment.centerLeft,
             margin: const EdgeInsets.only(bottom: 16),
-            backGroundColor: myMessage ? Colors.blueGrey : Colors.white,
-            elevation: 0,
+            backGroundColor: myMessage ? const Color(0xFF484d6d) : Colors.white,
+            shadowColor: Colors.black,
+            elevation: 1,
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width / 2),
               child: Column(

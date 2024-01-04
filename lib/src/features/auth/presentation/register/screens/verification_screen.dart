@@ -54,7 +54,7 @@ class _VerificationScreen extends StatelessWidget {
                     height: 16,
                   ),
                   const Text(
-                    'Welcome to News App',
+                    'Welcome to Chat App',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,

@@ -36,9 +36,8 @@ class _ChatScreen extends StatelessWidget {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (_, state) {
         if (state is LoadingChatState) {
-          return Scaffold(
-            backgroundColor: Colors.white.withOpacity(0.9),
-            body: const Center(
+          return const Scaffold(
+              body: Center(
               child: CircularProgressIndicator(),
             ),
           );
@@ -46,14 +45,12 @@ class _ChatScreen extends StatelessWidget {
 
         if (state is ErrorChatState) {
           return Scaffold(
-            backgroundColor: Colors.white.withOpacity(0.9),
-            body: Center(
+              body: Center(
               child: Text('Error: ${state.exception.toString()}'),
             ),
           );
         }
         return Scaffold(
-          backgroundColor: Colors.white.withOpacity(0.9),
           appBar: AppBar(
             title: InkWell(
               onTap: staticBlocProvider.goToContact,
