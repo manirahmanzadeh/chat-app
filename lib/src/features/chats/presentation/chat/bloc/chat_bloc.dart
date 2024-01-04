@@ -121,31 +121,32 @@ class ChatBloc extends Cubit<ChatState> {
   }
 
   FutureOr<void> sendMessage() async {
+    String message = messageController.text.trim();
+    if (message.isEmpty && file == null) {
+      return;
+    }
     try {
-      String message = messageController.text.trim();
-      if (message.isNotEmpty) {
-        final newSendingMessage = SM(
-          text: message,
-          file: file,
-          fileType: 'Photo',
-        );
-        _sending.add(newSendingMessage);
-        _sendMessageUseCase(params: {
-          'chatId': _chat.chatId,
-          'senderUid': currentUser.uid,
-          'text': message,
-          'onDone': () {
-            _sending.remove(newSendingMessage);
-            emit(LoadedChatState(_chat, _messageStream, _userProfile, _sending));
-          },
-          'file': file,
-          'fileType': 'Photo',
-          'onUploadProgress': newSendingMessage.onUploadProgress
-        });
-        file = null;
-        messageController.clear();
-        emit(SendingMessageChatState(_chat, _messageStream, _userProfile, _sending));
-      }
+      final newSendingMessage = SM(
+        text: message,
+        file: file,
+        fileType: 'Photo',
+      );
+      _sending.add(newSendingMessage);
+      _sendMessageUseCase(params: {
+        'chatId': _chat.chatId,
+        'senderUid': currentUser.uid,
+        'text': message,
+        'onDone': () {
+          _sending.remove(newSendingMessage);
+          emit(LoadedChatState(_chat, _messageStream, _userProfile, _sending));
+        },
+        'file': file,
+        'fileType': 'Photo',
+        'onUploadProgress': newSendingMessage.onUploadProgress
+      });
+      file = null;
+      messageController.clear();
+      emit(SendingMessageChatState(_chat, _messageStream, _userProfile, _sending));
     } on Exception catch (e) {
       print(e);
       emit(
