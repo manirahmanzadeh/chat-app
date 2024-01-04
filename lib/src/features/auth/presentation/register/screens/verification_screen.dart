@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:chatapp/src/core/components/app_text_form_field.dart';
-import 'package:chatapp/src/core/utils/validators.dart';
+import 'package:pinput/pinput.dart';
 
 import '../../../../../core/components/app_button.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../bloc/auth/auth_state.dart';
 import '../bloc/register_bloc.dart';
 
-class ForgetPasswordScreen extends StatelessWidget {
-  const ForgetPasswordScreen({super.key});
+class VerificationScreen extends StatelessWidget {
+  const VerificationScreen({super.key});
 
-  static const routeName = '/forget-password';
+  static const routeName = '/verification';
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<RegisterBloc>(
       create: (context) => RegisterBloc(context),
-      child: const _ForgetPasswordScreen(),
+      child: const _VerificationScreen(),
     );
   }
 }
 
-class _ForgetPasswordScreen extends StatelessWidget {
-  const _ForgetPasswordScreen({Key? key}) : super(key: key);
+class _VerificationScreen extends StatelessWidget {
+  const _VerificationScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +54,7 @@ class _ForgetPasswordScreen extends StatelessWidget {
                     height: 16,
                   ),
                   const Text(
-                    'Don\'t worry. It happens to best of us!',
+                    'Welcome to News App',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
@@ -68,7 +67,7 @@ class _ForgetPasswordScreen extends StatelessWidget {
                     height: 8,
                   ),
                   Text(
-                    'Enter your Email to get a recovery email',
+                    'Sign in to continue',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           color: const Color(0xFF9098B1),
@@ -78,43 +77,25 @@ class _ForgetPasswordScreen extends StatelessWidget {
                   const SizedBox(
                     height: 28,
                   ),
-                  AppTextFormField(
-                    hint: 'Your Email',
-                    icon: 'assets/icons/email.svg',
-                    validator: AppValidator.emailValidator,
-                    onSaved: registerBloc.onSavedEmail,
+                  Pinput(
+                    length: 6,
+                    onChanged: registerBloc.onChangeSmsCode,
+                  ),
+                  const SizedBox(
+                    height: 8,
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   AppButton(
-                    onTap: registerBloc.submitForgetPasswordForm,
-                    labelText: 'Send Recovery Email',
+                    onTap: registerBloc.submitVerificationForm,
+                    labelText: 'Sign In',
+                  ),
+                  const SizedBox(
+                    height: 21,
                   ),
                   const SizedBox(
                     height: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Don’t have a account?',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: const Color(0xFF9098B1),
-                              letterSpacing: 0.5,
-                            ),
-                      ),
-                      InkWell(
-                        onTap: registerBloc.goToSignUp,
-                        child: Text(
-                          ' Register',
-                          style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                                color: Colors.black,
-                                letterSpacing: 0.5,
-                              ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),

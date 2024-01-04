@@ -1,11 +1,25 @@
 import 'dart:io';
 
+import 'package:chatapp/src/features/auth/domain/entities/user_profile_entity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthRepository {
-  Future<void> signInWithEmailAndPassword(String email, String password);
+  Future<void> signInWithPhoneNumber(
+    String phoneNumber,
+    Function onCodeSent,
+    Function onVerificationCompleted,
+    Function onVerificationFailed,
+  );
 
-  Future<void> createUserWithEmailAndPassword(String email, String password);
+  Future<void> signInWithCredentials(AuthCredential credential);
+
+  Future<void> getOrCreateProfile();
+
+  Future<UserProfileEntity> getUserProfile(String uid);
+
+  Future<bool> checkProfileExistenceAndFill();
+
+  Future<void> signInWithCode(String verificationId, String smsCode);
 
   Future<void> signOut();
 
@@ -13,17 +27,17 @@ abstract class AuthRepository {
 
   User? getCurrentUser();
 
+  UserProfileEntity? getCurrentUserProfile();
+
   Future<void> sendRecoveryEmail(String email);
-
-  Future<void> signIngWithGoogle();
-
-  Future<void> signIngWithFacebook();
 
   Future<void> changeDisplayName(String displayName);
 
   Future<void> changePassword(String password);
 
   Future<void> changeEmail(String email);
+
+  Future<void> changeBio(String bio);
 
   Future<void> sendVerifyEmail();
 

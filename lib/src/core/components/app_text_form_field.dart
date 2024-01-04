@@ -4,12 +4,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 class AppTextFormField extends StatelessWidget {
   const AppTextFormField({
     Key? key,
-    this.hint,
+    this.title,
     this.icon,
     this.onSaved,
     this.validator,
   }) : super(key: key);
-  final String? hint;
+  final String? title;
   final String? icon;
   final Function(String?)? onSaved;
   final String? Function(String?)? validator;
@@ -17,11 +17,11 @@ class AppTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      onSaved: onSaved,
-      validator: validator,
       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: const Color(0xFF9098B1),
           ),
+      onSaved: onSaved,
+      validator: validator,
       decoration: InputDecoration(
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(
@@ -67,13 +67,13 @@ class AppTextFormField extends StatelessWidget {
                 ),
               )
             : null,
+        hintText: title,
         hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
               color: const Color(0xFF9098B1),
             ),
-        hintText: hint,
       ),
       keyboardType: TextInputType.text,
-      cursorColor: Colors.black,
+      cursorColor: Colors.blue,
       textAlign: TextAlign.left,
     );
   }

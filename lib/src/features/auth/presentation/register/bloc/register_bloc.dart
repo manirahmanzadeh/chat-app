@@ -1,8 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:chatapp/src/features/auth/presentation/register/screens/forget_password_screen.dart';
-import 'package:chatapp/src/features/auth/presentation/register/screens/login_screen.dart';
-import 'package:chatapp/src/features/auth/presentation/register/screens/signup_screen.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../bloc/auth/auth_bloc.dart';
 import '../../bloc/auth/auth_event.dart';
@@ -15,89 +15,110 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   final registerFormKey = GlobalKey<FormState>();
 
-  String? email;
-  String? password;
+  String? phoneNumber;
+  String? smsCode;
 
-  onSavedEmail(String? value) {
-    email = value;
+  String? getUserPhotoUrl(BuildContext context) {
+    final user = BlocProvider.of<AuthBloc>(context).getCurrentUser();
+    if (user != null) {
+      return user.photoURL;
+    }
+    return null;
   }
 
-  onSavedPassword(String? value) {
-    password = value;
+  bool hasPhoto(BuildContext context) => getUserPhotoUrl(context) != null;
+
+  String? getUserDisplayName(BuildContext context) {
+    final user = BlocProvider.of<AuthBloc>(context).getCurrentUser();
+    if (user != null && user.displayName != null && user.displayName!.isNotEmpty) {
+      return user.displayName;
+    }
+    return null;
+  }
+
+  bool hasDisplayName(BuildContext context) => getUserDisplayName(context) != null;
+
+  onSavedPhoneNumber(String? value) {
+    phoneNumber = value;
+  }
+
+  onChangeSmsCode(String? value) {
+    smsCode = value;
   }
 
   submitLoginForm() {
     if (registerFormKey.currentState!.validate()) {
       registerFormKey.currentState!.save();
       BlocProvider.of<AuthBloc>(context).add(
-        SignInEmailPasswordAuthEvent(
-          email: email!,
-          password: password!,
+        SignInPhoneNumberAuthEvent(
+          phoneNumber: phoneNumber!,
           context: context,
         ),
       );
     }
   }
 
-  submitSignUpForm() {
+  submitVerificationForm() {
     if (registerFormKey.currentState!.validate()) {
       registerFormKey.currentState!.save();
       BlocProvider.of<AuthBloc>(context).add(
-        SignUpEmailPasswordAuthEvent(
-          email: email!,
-          password: password!,
-          context: context,
-        ),
+        SignInCodeAuthEvent(smsCode: smsCode ?? '', context: context),
       );
     }
   }
 
-  submitForgetPasswordForm() {
-    if (registerFormKey.currentState!.validate()) {
+  void showImagePicker(BuildContext screenContext) {
+    showModalBottomSheet(
+      context: screenContext,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Choose from Gallery'),
+              onTap: () {
+                _pickImage(ImageSource.gallery, screenContext);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Take a Photo'),
+              onTap: () {
+                _pickImage(ImageSource.camera, screenContext);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImage(
+    ImageSource source,
+    BuildContext context,
+  ) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      File image = File(pickedFile.path);
+      BlocProvider.of<AuthBloc>(context).add(ChangeProfilePhotoAuthEvent(photo: image, context: context));
+    }
+  }
+
+  onNameSaved(String? value) {
+    name = value;
+  }
+
+  String? name;
+
+  submitChangeDisplayNameForm(BuildContext context) {
+    if (registerFormKey.currentState?.validate() ?? false) {
       registerFormKey.currentState!.save();
-      BlocProvider.of<AuthBloc>(context).add(
-        SendRecoveryEmailAuthEvent(
-          email: email!,
-          context: context,
-        ),
-      );
+      BlocProvider.of<AuthBloc>(context).add(ChangeDisplayNameAuthEvent(displayName: name!, context: context));
     }
-  }
-
-  signInWithGoogle() {
-    BlocProvider.of<AuthBloc>(context).add(
-      SignInWithGoogleAuthEvent(
-        context: context,
-      ),
-    );
-  }
-
-  signInWithFacebook() {
-    BlocProvider.of<AuthBloc>(context).add(
-      SignInWithFacebookAuthEvent(
-        context: context,
-      ),
-    );
-  }
-
-  void goToSignUp() {
-    Navigator.pushNamed(
-      context,
-      SignUpScreen.routeName,
-    );
-  }
-
-  void goToSignIn() {
-    Navigator.pushNamed(
-      context,
-      LoginScreen.routeName,
-    );
-  }
-
-  void goToForgetPassword() {
-    Navigator.pushNamed(
-      context,
-      ForgetPasswordScreen.routeName,
-    );
   }
 }

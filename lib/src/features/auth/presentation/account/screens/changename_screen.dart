@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chatapp/src/core/components/app_button.dart';
 import 'package:chatapp/src/core/components/app_text_form_field.dart';
 import 'package:chatapp/src/core/utils/validators.dart';
 import 'package:chatapp/src/features/auth/presentation/account/bloc/profile_state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/profile_bloc.dart';
 
@@ -79,7 +79,7 @@ class ChangeNameScreen extends StatelessWidget {
                             height: 12,
                           ),
                           AppTextFormField(
-                            hint: staticProfileBloc.getUserDisplayName(context),
+                            title: staticProfileBloc.getUserDisplayName(context),
                             validator: AppValidator.emptyValidator,
                             onSaved: staticProfileBloc.onNameSaved,
                           ),
