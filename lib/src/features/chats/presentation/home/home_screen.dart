@@ -65,6 +65,7 @@ class _HomeScreen extends StatelessWidget {
               } else {
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
+                  padding: const EdgeInsets.only(top: 16),
                   itemBuilder: (context, index) {
                     ChatEntity chat = snapshot.data![index];
                     return ChatComponent(chat: chat);
@@ -77,7 +78,9 @@ class _HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pushNamed(context, ContactsScreen.routeName),
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+        ),
       ),
     );
   }

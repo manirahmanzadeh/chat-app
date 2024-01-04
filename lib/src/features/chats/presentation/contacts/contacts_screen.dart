@@ -53,7 +53,7 @@ class _ContactsScreen extends StatelessWidget {
               return ListTile(
                 onTap: () => staticBlocProvider.add(CreateChatContactsEvent(state.contacts![index], state.contacts!)),
                 leading: CircleAvatar(
-                  child: CachedNetworkImage(imageUrl: contact.photoURL ?? ''),
+                  backgroundImage: CachedNetworkImageProvider(contact.photoURL ?? ''),
                 ),
                 title: Text(contact.displayName ?? contact.uid),
                 // Add more widgets to display other chat information
