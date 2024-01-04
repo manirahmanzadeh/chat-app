@@ -37,7 +37,7 @@ class ChatInput extends StatelessWidget {
             child: Row(
               children: [
                 const Icon(
-                  Icons.attach_file,
+                  Icons.image,
                   color: Colors.blueGrey,
                 ),
                 const SizedBox(
@@ -167,7 +167,7 @@ class ChatInput extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.attach_file),
+                icon: const Icon(Icons.image),
                 onPressed: attachFile,
               ),
               if (editingMessage != null)

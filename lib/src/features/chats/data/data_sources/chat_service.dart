@@ -40,6 +40,7 @@ class ChatService {
       fileUrl = await _uploadFile(chatId, file, onUploadProgress);
     }
 
+    onDone();
     await _firebaseFirestore.collection('chats').doc(chatId).collection('messages').add({
       'senderUid': senderUid,
       'text': text,
@@ -47,7 +48,6 @@ class ChatService {
       'fileType': fileType,
       'timestamp': FieldValue.serverTimestamp(),
     }).onError((error, stackTrace) => throw (Exception(error)));
-    onDone();
   }
 
   Future<String?> _uploadFile(String chatId, File file, Function(double)? onProgress) async {

@@ -1,9 +1,12 @@
+import 'dart:ui' as ui;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/src/core/utils/date_formatter.dart';
 import 'package:chatapp/src/features/chats/domain/entities/message_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
@@ -89,6 +92,31 @@ class MessageBubble extends StatelessWidget {
                     CachedNetworkImage(
                       imageUrl: message.fileUrl!,
                       width: MediaQuery.sizeOf(context).width / 2,
+                      placeholder: (_, __) => SizedBox(
+                        width: MediaQuery.of(context).size.width / 2,
+                        height: MediaQuery.of(context).size.width / 2,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/placeholder.svg',
+                                width: MediaQuery.of(context).size.width / 2,
+                                height: MediaQuery.of(context).size.width / 2,
+                              ),
+
+                              // BackdropFilter with ImageFilter.blur
+                              BackdropFilter(
+                                filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                                child: Container(
+                                  color: Colors.transparent,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   const SizedBox(
                     height: 4,
